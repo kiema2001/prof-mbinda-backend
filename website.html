@@ -1,0 +1,1617 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Professor Wilton Mbinda - Pwani University | PUBREC Research Center</title>
+    <meta name="description" content="Professor Wilton Mbinda - Registrar of Research and Extension at Pwani University. Principal Investigator at PUBREC Research Center. Expert in Molecular Biology, Genetic Engineering, and Biotechnology.">
+    <meta name="keywords" content="Professor Wilton Mbinda, Pwani University, PUBREC, Molecular Biology, Genetic Engineering, Biotechnology, Research, PUBREC Research Center, Plant Biotechnology, Genome Editing">
+    <meta name="author" content="Professor Wilton Mbinda">
+    
+    <!-- Open Graph Meta Tags -->
+    <meta property="og:title" content="Professor Wilton Mbinda - Pwani University | PUBREC Research Center">
+    <meta property="og:description" content="Registrar of Research and Extension at Pwani University and Principal Investigator at PUBREC Research Center">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://profmbinda.co.ke">
+    <meta property="og:image" content="https://profmbinda.co.ke/uploads/profile-photo.jpg">
+    
+    <!-- Twitter Card Meta Tags -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Professor Wilton Mbinda - Pwani University">
+    <meta name="twitter:description" content="Registrar of Research and Extension at Pwani University | PUBREC Research Center">
+    <meta name="twitter:image" content="https://profmbinda.co.ke/uploads/profile-photo.jpg">
+    
+    <!-- Schema.org markup for Google -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "Person",
+      "name": "Professor Wilton Mbinda",
+      "jobTitle": "Registrar of Research and Extension",
+      "worksFor": {
+        "@type": "Organization",
+        "name": "Pwani University"
+      },
+      "alumniOf": "Pwani University",
+      "affiliation": {
+        "@type": "Organization",
+        "name": "Pwani University Bioscience Research Center (PUBREC)"
+      },
+      "knowsAbout": ["Molecular Biology", "Genetic Engineering", "Biotechnology", "Plant Stress Biology", "Genome Editing", "Biofortification"],
+      "url": "https://profmbinda.co.ke",
+      "sameAs": [
+        "https://www.linkedin.com/in/wilton-mbinda-87625034/"
+      ]
+    }
+    </script>
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="canonical" href="https://profmbinda.co.ke">
+    
+    <style>
+        :root {
+            --primary: #1a365d;
+            --secondary: #2b6cb0;
+            --accent: #2d9cdb;
+            --light: #f7fafc;
+            --dark: #2d3748;
+            --success: #38a169;
+            --warning: #d69e2e;
+            --text: #4a5568;
+            --border: #e2e8f0;
+            --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', sans-serif;
+        }
+
+        body {
+            background-color: #f8f9fa;
+            color: var(--text);
+            line-height: 1.6;
+        }
+
+        .container {
+            width: 90%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 15px;
+        }
+
+        /* Header & Navigation */
+        header {
+            background-color: white;
+            box-shadow: var(--shadow);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 0;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+        }
+
+        .logo-text {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--primary);
+        }
+
+        .logo-text span {
+            color: var(--secondary);
+        }
+
+        nav ul {
+            display: flex;
+            list-style: none;
+        }
+
+        nav ul li {
+            margin-left: 1.5rem;
+        }
+
+        nav ul li a {
+            color: var(--dark);
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s;
+            padding: 0.5rem 0;
+            position: relative;
+        }
+
+        nav ul li a:hover {
+            color: var(--secondary);
+        }
+
+        nav ul li a::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background-color: var(--secondary);
+            transition: width 0.3s;
+        }
+
+        nav ul li a:hover::after {
+            width: 100%;
+        }
+
+        .mobile-menu {
+            display: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+
+        /* Notifications Banner - Moving from left to right */
+        .notifications-banner {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            color: white;
+            padding: 1rem 0;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .notifications-container {
+            display: flex;
+            animation: scrollNotifications 30s linear infinite;
+            width: max-content;
+        }
+
+        .notification-item {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 0.8rem 1.5rem;
+            margin: 0 1rem;
+            border-radius: 6px;
+            border-left: 4px solid var(--accent);
+            white-space: nowrap;
+            flex-shrink: 0;
+        }
+
+        .notification-item.success {
+            border-left-color: var(--success);
+        }
+
+        .notification-item.warning {
+            border-left-color: var(--warning);
+        }
+
+        @keyframes scrollNotifications {
+            0% {
+                transform: translateX(100%);
+            }
+            100% {
+                transform: translateX(-100%);
+            }
+        }
+
+        /* Hero Section */
+        .hero {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            color: white;
+            padding: 5rem 0;
+            text-align: center;
+        }
+
+        .hero h1 {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            font-weight: 700;
+        }
+
+        .hero p {
+            font-size: 1.2rem;
+            max-width: 700px;
+            margin: 0 auto 2rem;
+            opacity: 0.9;
+        }
+
+        .btn {
+            display: inline-block;
+            background-color: white;
+            color: var(--primary);
+            padding: 0.8rem 1.5rem;
+            border-radius: 4px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s;
+            border: none;
+            cursor: pointer;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        .btn-primary {
+            background-color: var(--accent);
+            color: white;
+        }
+
+        .btn-secondary {
+            background-color: var(--secondary);
+            color: white;
+        }
+
+        /* Sections */
+        section {
+            padding: 5rem 0;
+        }
+
+        .section-title {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        .section-title h2 {
+            font-size: 2.5rem;
+            color: var(--primary);
+            position: relative;
+            display: inline-block;
+            padding-bottom: 10px;
+        }
+
+        .section-title h2::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 80px;
+            height: 3px;
+            background-color: var(--secondary);
+        }
+
+        /* Profile Section */
+        .profile {
+            background-color: white;
+        }
+
+        .profile-content {
+            display: flex;
+            align-items: center;
+            gap: 3rem;
+        }
+
+        .profile-image {
+            flex: 0 0 300px;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: var(--shadow);
+        }
+
+        .profile-image img {
+            width: 100%;
+            height: 400px;
+            object-fit: cover;
+            object-position: center;
+            display: block;
+        }
+
+        .profile-text {
+            flex: 1;
+        }
+
+        .profile-text h3 {
+            font-size: 1.8rem;
+            margin-bottom: 1rem;
+            color: var(--primary);
+        }
+
+        .profile-text p {
+            margin-bottom: 1rem;
+        }
+
+        .profile-details {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-top: 2rem;
+        }
+
+        .detail-card {
+            background: var(--light);
+            padding: 1.5rem;
+            border-radius: 8px;
+            border-left: 4px solid var(--secondary);
+        }
+
+        .detail-card h4 {
+            color: var(--primary);
+            margin-bottom: 0.5rem;
+        }
+
+        /* Database Search Section */
+        .database-search {
+            background-color: var(--light);
+        }
+
+        .search-box {
+            background: white;
+            padding: 2rem;
+            border-radius: 8px;
+            box-shadow: var(--shadow);
+            margin-bottom: 2rem;
+        }
+
+        .search-form {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .search-input {
+            flex: 1;
+            padding: 0.8rem 1rem;
+            border: 1px solid var(--border);
+            border-radius: 4px;
+            font-size: 1rem;
+        }
+
+        /* Publications List Style */
+        .publications-list {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .publication-item {
+            background: white;
+            border-radius: 8px;
+            padding: 1.5rem;
+            box-shadow: var(--shadow);
+            border-left: 4px solid var(--accent);
+            transition: transform 0.2s;
+        }
+
+        .publication-item:hover {
+            transform: translateY(-2px);
+        }
+
+        .publication-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 0.5rem;
+        }
+
+        .publication-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: var(--primary);
+            margin-bottom: 0.5rem;
+        }
+
+        .publication-year {
+            background: var(--accent);
+            color: white;
+            padding: 0.3rem 0.8rem;
+            border-radius: 4px;
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+
+        .publication-details {
+            color: var(--text);
+            margin-bottom: 1rem;
+            line-height: 1.5;
+        }
+
+        .publication-links {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .more-content {
+            display: none;
+            margin-top: 1rem;
+            padding-top: 1rem;
+            border-top: 1px solid var(--border);
+        }
+
+        .more-btn {
+            background: none;
+            border: none;
+            color: var(--secondary);
+            cursor: pointer;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem 0;
+        }
+
+        .more-btn:hover {
+            text-decoration: underline;
+        }
+
+        /* Gallery Section */
+        .gallery {
+            background-color: white;
+        }
+
+        .gallery-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .gallery-item {
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: var(--shadow);
+            position: relative;
+            height: 200px;
+        }
+
+        .gallery-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            object-position: center;
+            transition: transform 0.3s;
+        }
+
+        .gallery-item:hover img {
+            transform: scale(1.05);
+        }
+
+        .gallery-caption {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: rgba(0, 0, 0, 0.7);
+            color: white;
+            padding: 0.5rem;
+            font-size: 0.9rem;
+            text-align: center;
+        }
+
+        /* Documents Section */
+        .documents {
+            background-color: var(--light);
+        }
+
+        .documents-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 2rem;
+        }
+
+        .document-card {
+            background: white;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: var(--shadow);
+            transition: transform 0.3s;
+        }
+
+        .document-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .document-icon {
+            background: var(--primary);
+            color: white;
+            padding: 1.5rem;
+            text-align: center;
+            font-size: 2rem;
+        }
+
+        .document-content {
+            padding: 1.5rem;
+        }
+
+        .document-content h3 {
+            margin-bottom: 0.5rem;
+            color: var(--primary);
+        }
+
+        .document-meta {
+            font-size: 0.9rem;
+            color: #666;
+            margin-bottom: 1rem;
+        }
+
+        .document-links {
+            display: flex;
+            gap: 10px;
+        }
+
+        /* Students Section */
+        .students {
+            background-color: white;
+        }
+
+        .student-tabs {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 2rem;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .tab-btn {
+            background: none;
+            border: none;
+            padding: 1rem 2rem;
+            font-size: 1rem;
+            cursor: pointer;
+            position: relative;
+            color: var(--text);
+        }
+
+        .tab-btn.active {
+            color: var(--secondary);
+            font-weight: 600;
+        }
+
+        .tab-btn.active::after {
+            content: '';
+            position: absolute;
+            bottom: -1px;
+            left: 0;
+            width: 100%;
+            height: 3px;
+            background-color: var(--secondary);
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .student-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 2rem;
+        }
+
+        .student-card {
+            background: var(--light);
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: var(--shadow);
+            transition: transform 0.3s;
+        }
+
+        .student-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .student-img {
+            width: 100%;
+            height: 250px;
+            object-fit: cover;
+            object-position: center;
+        }
+
+        .student-info {
+            padding: 1.5rem;
+        }
+
+        .student-info h3 {
+            margin-bottom: 0.5rem;
+            color: var(--primary);
+        }
+
+        .student-info p {
+            font-size: 0.9rem;
+            color: #666;
+            margin-bottom: 1rem;
+        }
+
+        .student-status {
+            display: inline-block;
+            padding: 0.3rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+
+        .status-current {
+            background-color: #e6fffa;
+            color: var(--success);
+        }
+
+        .status-alumni {
+            background-color: #fed7d7;
+            color: #e53e3e;
+        }
+
+        /* Research Section */
+        .research {
+            background-color: var(--light);
+        }
+
+        .research-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 2rem;
+        }
+
+        .research-card {
+            background: white;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: var(--shadow);
+        }
+
+        .research-header {
+            background: var(--primary);
+            color: white;
+            padding: 1rem;
+            text-align: center;
+        }
+
+        .research-body {
+            padding: 1.5rem;
+        }
+
+        .research-body h3 {
+            margin-bottom: 1rem;
+            color: var(--primary);
+        }
+
+        .research-body ul {
+            margin-left: 1.5rem;
+            margin-bottom: 1rem;
+        }
+
+        /* Contact Section */
+        .contact {
+            background-color: white;
+        }
+
+        .contact-content {
+            display: flex;
+            gap: 3rem;
+        }
+
+        .contact-info {
+            flex: 1;
+        }
+
+        .contact-info h3 {
+            margin-bottom: 1.5rem;
+            color: var(--primary);
+        }
+
+        .contact-item {
+            display: flex;
+            align-items: flex-start;
+            margin-bottom: 1.5rem;
+        }
+
+        .contact-icon {
+            background: var(--secondary);
+            color: white;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 1rem;
+            flex-shrink: 0;
+        }
+
+        .contact-form {
+            flex: 1;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 0.8rem;
+            border: 1px solid var(--border);
+            border-radius: 4px;
+            font-size: 1rem;
+        }
+
+        textarea.form-control {
+            min-height: 150px;
+            resize: vertical;
+        }
+
+        /* Footer */
+        footer {
+            background-color: var(--dark);
+            color: white;
+            padding: 3rem 0 1.5rem;
+        }
+
+        .footer-content {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 2rem;
+        }
+
+        .footer-logo {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+        }
+
+        .footer-links h4, .footer-social h4 {
+            margin-bottom: 1rem;
+            font-size: 1.2rem;
+        }
+
+        .footer-links ul {
+            list-style: none;
+        }
+
+        .footer-links ul li {
+            margin-bottom: 0.5rem;
+        }
+
+        .footer-links ul li a {
+            color: #ccc;
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+
+        .footer-links ul li a:hover {
+            color: var(--secondary);
+        }
+
+        .social-icons {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .social-icons a {
+            color: white;
+            font-size: 1.2rem;
+            transition: color 0.3s;
+        }
+
+        .social-icons a:hover {
+            color: var(--secondary);
+        }
+
+        .copyright {
+            text-align: center;
+            padding-top: 1.5rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            font-size: 0.9rem;
+            color: #ccc;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 992px) {
+            .profile-content {
+                flex-direction: column;
+            }
+            
+            .profile-image {
+                flex: 0 0 auto;
+                margin: 0 auto 2rem;
+            }
+            
+            .contact-content {
+                flex-direction: column;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .header-content {
+                flex-direction: column;
+                text-align: center;
+            }
+            
+            nav ul {
+                margin-top: 1rem;
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+            
+            nav ul li {
+                margin: 0 0.5rem 0.5rem;
+            }
+            
+            .hero h1 {
+                font-size: 2.2rem;
+            }
+            
+            .footer-content {
+                flex-direction: column;
+                gap: 2rem;
+            }
+            
+            .student-tabs {
+                flex-wrap: wrap;
+            }
+            
+            .search-form {
+                flex-direction: column;
+            }
+        }
+
+        @media (max-width: 576px) {
+            .student-grid, .research-grid, .gallery-grid, .documents-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .section-title h2 {
+                font-size: 2rem;
+            }
+            
+            .hero {
+                padding: 3rem 0;
+            }
+            
+            section {
+                padding: 3rem 0;
+            }
+        }
+
+        /* Loading Styles */
+        .loading-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(255, 255, 255, 0.9);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .spinner {
+            border: 4px solid rgba(0, 0, 0, 0.1);
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            border-left-color: var(--primary);
+            animation: spin 1s ease infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <!-- Loading Overlay -->
+    <div class="loading-overlay" id="loading-overlay">
+        <div class="spinner"></div>
+    </div>
+
+    <!-- Header -->
+    <header>
+        <div class="container">
+            <div class="header-content">
+                <div class="logo">
+                    <div class="logo-text">Prof. <span>Mbinda</span> Lab</div>
+                </div>
+                <nav>
+                    <ul>
+                        <li><a href="#home">Home</a></li>
+                        <li><a href="#profile">Profile</a></li>
+                        <li><a href="#gallery">Gallery</a></li>
+                        <li><a href="#documents">Documents</a></li>
+                        <li><a href="#database">Research Database</a></li>
+                        <li><a href="#students">Researchers</a></li>
+                        <li><a href="#research">PUBREC</a></li>
+                        <li><a href="#contact">Contact</a></li>
+                    </ul>
+                </nav>
+                <div class="mobile-menu">
+                    <i class="fas fa-bars"></i>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Notifications Banner - Moving from left to right -->
+    <div class="notifications-banner" id="notifications-banner" style="display: none;">
+        <div class="notifications-container" id="notifications-container">
+            <!-- Notifications will be loaded here -->
+        </div>
+    </div>
+
+    <!-- Hero Section -->
+    <section class="hero" id="home">
+        <div class="container">
+            <h1>Professor Wilton Mbinda</h1>
+            <p>Registrar Research and Extension | Pwani University</p>
+            <p>Principal Investigator | PUBREC Research Center</p>
+            <a href="#database" class="btn">Explore Research Database</a>
+        </div>
+    </section>
+
+    <!-- Profile Section -->
+    <section class="profile" id="profile">
+        <div class="container">
+            <div class="section-title">
+                <h2>Profile</h2>
+            </div>
+            <div class="profile-content">
+                <div class="profile-image">
+                    <img id="professor-photo" src="https://images.unsplash.com/photo-1560250097-0b93528c311a?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80" alt="Professor Wilton Mbinda">
+                </div>
+                <div class="profile-text">
+                    <h3>Professor Wilton Mbinda</h3>
+                    <div id="profile-bio">
+                        <p>Loading profile information...</p>
+                    </div>
+                    
+                    <div class="profile-details">
+                        <div class="detail-card">
+                            <h4>Contact Information</h4>
+                            <div id="profile-contact">
+                                <p>Loading contact information...</p>
+                            </div>
+                        </div>
+                        <div class="detail-card">
+                            <h4>Research Center</h4>
+                            <p>Pwani University Bioscience Research Center (PUBREC)</p>
+                        </div>
+                        <div class="detail-card">
+                            <h4>Specialization</h4>
+                            <p>Molecular Biology, Genetic Engineering, Plant Biotechnology</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Gallery Section -->
+    <section class="gallery" id="gallery">
+        <div class="container">
+            <div class="section-title">
+                <h2>Gallery</h2>
+                <p>Research activities, lab work, and team photos</p>
+            </div>
+            <div class="gallery-grid">
+                <div class="gallery-item">
+                    <img src="https://images.unsplash.com/photo-1581092921461-eab62e97a780?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80" alt="Lab Research">
+                    <div class="gallery-caption">Lab Research Activities</div>
+                </div>
+                <div class="gallery-item">
+                    <img src="https://images.unsplash.com/photo-1532187863486-abf9dbad1b69?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80" alt="Field Work">
+                    <div class="gallery-caption">Field Research</div>
+                </div>
+                <div class="gallery-item">
+                    <img src="https://images.unsplash.com/photo-1559757148-5c350d0d3c56?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80" alt="Team Photo">
+                    <div class="gallery-caption">Research Team</div>
+                </div>
+                <div class="gallery-item">
+                    <img src="https://images.unsplash.com/photo-1581094794329-c8112a89af12?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80" alt="Conference">
+                    <div class="gallery-caption">Academic Conference</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Documents Section -->
+    <section class="documents" id="documents">
+        <div class="container">
+            <div class="section-title">
+                <h2>Documents & Resources</h2>
+                <p>Download research papers, CV, and other resources</p>
+            </div>
+            <div class="documents-grid" id="documents-container">
+                <!-- Documents will be loaded from API -->
+            </div>
+        </div>
+    </section>
+
+    <!-- Database Search Section -->
+    <section class="database-search" id="database">
+        <div class="container">
+            <div class="section-title">
+                <h2>Research Database</h2>
+                <p>Search and explore all research publications, projects, and data</p>
+            </div>
+            
+            <div class="search-box">
+                <div class="search-form">
+                    <input type="text" class="search-input" id="searchQuery" placeholder="Search publications, researchers, projects...">
+                    <button class="btn btn-primary" id="searchButton">Search</button>
+                </div>
+                
+                <div class="search-results" id="searchResults">
+                    <h3>Recent Publications</h3>
+                    <div class="publications-list" id="resultsContainer">
+                        <!-- Publications will be loaded from API as a list -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Students Section -->
+    <section class="students" id="students">
+        <div class="container">
+            <div class="section-title">
+                <h2>Researchers</h2>
+                <p>Meet the current and former members of our research team</p>
+            </div>
+            <div class="student-tabs">
+                <button class="tab-btn active" data-tab="phd">PhD Students</button>
+                <button class="tab-btn" data-tab="masters">Masters Students</button>
+                <button class="tab-btn" data-tab="alumni">Alumni</button>
+            </div>
+            
+            <div class="tab-content active" id="phd-tab">
+                <div class="student-grid" id="phd-students">
+                    <!-- PhD students will be loaded from API -->
+                </div>
+            </div>
+            
+            <div class="tab-content" id="masters-tab">
+                <div class="student-grid" id="masters-students">
+                    <!-- Masters students will be loaded from API -->
+                </div>
+            </div>
+            
+            <div class="tab-content" id="alumni-tab">
+                <div class="student-grid" id="alumni-students">
+                    <!-- Alumni will be loaded from API -->
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Research Section -->
+    <section class="research" id="research">
+        <div class="container">
+            <div class="section-title">
+                <h2>PUBREC Research Center</h2>
+                <p>Pwani University Bioscience Research Center</p>
+            </div>
+            <div class="research-grid" id="research-projects">
+                <!-- Research projects will be loaded from API -->
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section class="contact" id="contact">
+        <div class="container">
+            <div class="section-title">
+                <h2>Contact</h2>
+            </div>
+            <div class="contact-content">
+                <div class="contact-info">
+                    <h3>Get In Touch</h3>
+                    <div class="contact-item">
+                        <div class="contact-icon">
+                            <i class="fas fa-map-marker-alt"></i>
+                        </div>
+                        <div>
+                            <h4>Address</h4>
+                            <p>Pwani University Bioscience Research Center (PUBREC)<br>Pwani University<br>Kilifi, Kenya</p>
+                        </div>
+                    </div>
+                    <div class="contact-item">
+                        <div class="contact-icon">
+                            <i class="fas fa-phone"></i>
+                        </div>
+                        <div>
+                            <h4>Phone</h4>
+                            <p>+254 (0) 20 123 4567</p>
+                        </div>
+                    </div>
+                    <div class="contact-item">
+                        <div class="contact-icon">
+                            <i class="fas fa-envelope"></i>
+                        </div>
+                        <div>
+                            <h4>Email</h4>
+                            <p>w.mbinda@pu.ac.ke</p>
+                        </div>
+                    </div>
+                    <div class="contact-item">
+                        <div class="contact-icon">
+                            <i class="fas fa-clock"></i>
+                        </div>
+                        <div>
+                            <h4>Office Hours</h4>
+                            <p>Monday - Friday: 8:00 AM - 5:00 PM</p>
+                        </div>
+                    </div>
+                    <div class="contact-item">
+                        <div class="contact-icon">
+                            <i class="fab fa-linkedin"></i>
+                        </div>
+                        <div>
+                            <h4>LinkedIn</h4>
+                            <p><a href="https://www.linkedin.com/in/wilton-mbinda-87625034/?originalSubdomain=ke" style="color: var(--secondary);">Connect on LinkedIn</a></p>
+                        </div>
+                    </div>
+                </div>
+                <div class="contact-form">
+                    <h3>Send a Message</h3>
+                    <form id="contactForm">
+                        <div class="form-group">
+                            <label for="name">Your Name</label>
+                            <input type="text" id="name" class="form-control" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="email">Your Email</label>
+                            <input type="email" id="email" class="form-control" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="subject">Subject</label>
+                            <input type="text" id="subject" class="form-control" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="message">Message</label>
+                            <textarea id="message" class="form-control" required></textarea>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Send Message</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-about">
+                    <div class="footer-logo">Prof. Mbinda Lab</div>
+                    <p>Pwani University Bioscience Research Center (PUBREC)<br>Advancing biotechnology through innovative research and dedicated mentorship.</p>
+                </div>
+                <div class="footer-links">
+                    <h4>Quick Links</h4>
+                    <ul>
+                        <li><a href="#home">Home</a></li>
+                        <li><a href="#profile">Profile</a></li>
+                        <li><a href="#gallery">Gallery</a></li>
+                        <li><a href="#documents">Documents</a></li>
+                        <li><a href="#database">Research Database</a></li>
+                        <li><a href="#students">Researchers</a></li>
+                        <li><a href="#research">PUBREC</a></li>
+                        <li><a href="#contact">Contact</a></li>
+                    </ul>
+                </div>
+                <div class="footer-social">
+                    <h4>Connect</h4>
+                    <div class="social-icons">
+                        <a href="https://www.linkedin.com/in/wilton-mbinda-87625034/?originalSubdomain=ke"><i class="fab fa-linkedin"></i></a>
+                        <a href="#"><i class="fab fa-twitter"></i></a>
+                        <a href="#"><i class="fab fa-researchgate"></i></a>
+                        <a href="#"><i class="fab fa-google-scholar"></i></a>
+                    </div>
+                </div>
+            </div>
+            <div class="copyright">
+                <p>&copy; 2025 Professor Wilton Mbinda Research Group - Pwani University. All Rights Reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Global state to hold website data
+        let websiteData = {
+            bio: { bio: '', contact: '', profile_photo: '' },
+            students: [],
+            publications: [],
+            research: [],
+            notifications: [],
+            documents: []
+        };
+
+        // Utility Functions
+        function showLoading() {
+            document.getElementById('loading-overlay').style.display = 'flex';
+        }
+
+        function hideLoading() {
+            document.getElementById('loading-overlay').style.display = 'none';
+        }
+
+        // Load all data from API
+        async function loadWebsiteData() {
+            showLoading();
+            try {
+                const response = await fetch('/api/data');
+                if (!response.ok) throw new Error('Failed to fetch website data');
+                
+                const data = await response.json();
+                websiteData = data;
+                
+                // Render all sections with fresh data
+                renderProfile();
+                renderPublications();
+                renderStudents();
+                renderResearch();
+                renderNotifications();
+                renderDocuments();
+                
+            } catch (error) {
+                console.error('Error loading website data:', error);
+                // Fallback to default content
+                document.getElementById('profile-bio').innerHTML = '<p>Professor Wilton Mbinda is the Registrar of Research and Extension at Pwani University and a distinguished Principal Investigator at PUBREC.</p>';
+            } finally {
+                hideLoading();
+            }
+        }
+
+        // Render Profile Section
+        function renderProfile() {
+            const bioElement = document.getElementById('profile-bio');
+            const contactElement = document.getElementById('profile-contact');
+            const photoElement = document.getElementById('professor-photo');
+            
+            if (websiteData.bio.bio) {
+                bioElement.innerHTML = websiteData.bio.bio.replace(/\n/g, '<br>');
+            } else {
+                bioElement.innerHTML = `
+                    <p>Professor Wilton Mbinda is the Registrar of Research and Extension at Pwani University and a distinguished Principal Investigator at the Pwani University Bioscience Research Center (PUBREC).</p>
+                    <p>With extensive research experience in molecular biology, genetic engineering, and biotechnology, his work focuses on developing innovative solutions for sustainable agriculture and improving crop resilience.</p>
+                    <p>Professor Mbinda leads a dynamic research team at PUBREC, focusing on plant stress biology, genome editing, and biofortification.</p>
+                `;
+            }
+            
+            if (websiteData.bio.contact) {
+                contactElement.innerHTML = websiteData.bio.contact.replace(/\n/g, '<br>');
+            } else {
+                contactElement.innerHTML = `
+                    <p>Email: w.mbinda@pu.ac.ke</p>
+                    <p>Phone: +254 (0) 20 123 4567</p>
+                    <p>Office: Research and Extension Building</p>
+                `;
+            }
+
+            if (websiteData.bio.profile_photo) {
+                photoElement.src = websiteData.bio.profile_photo;
+            }
+        }
+
+        // Render Publications as a list with "more" functionality
+        function renderPublications() {
+            const container = document.getElementById('resultsContainer');
+            container.innerHTML = '';
+            
+            // Sort publications by year (newest first)
+            const sortedPublications = [...websiteData.publications].sort((a, b) => b.year - a.year);
+            
+            if (sortedPublications.length === 0) {
+                container.innerHTML = '<p>No publications available yet.</p>';
+                return;
+            }
+            
+            sortedPublications.forEach(pub => {
+                const item = document.createElement('div');
+                item.className = 'publication-item';
+                
+                item.innerHTML = `
+                    <div class="publication-header">
+                        <div class="publication-title">${pub.title}</div>
+                        <div class="publication-year">${pub.year}</div>
+                    </div>
+                    <div class="publication-details">
+                        ${pub.details.length > 150 ? 
+                            `<span class="short-details">${pub.details.substring(0, 150)}...</span>
+                             <span class="more-content" style="display: none;">${pub.details.substring(150)}</span>` 
+                            : pub.details
+                        }
+                    </div>
+                    ${pub.details.length > 150 ? 
+                        `<button class="more-btn" onclick="toggleMoreDetails(this)">
+                            <span>More</span>
+                            <i class="fas fa-chevron-down"></i>
+                        </button>` 
+                        : ''
+                    }
+                    <div class="publication-links">
+                        ${pub.link ? `<a href="${pub.link}" class="result-link" target="_blank"><i class="fas fa-external-link-alt"></i> View</a>` : ''}
+                        ${pub.document_path ? `<a href="${pub.document_path}" class="result-link" target="_blank"><i class="fas fa-download"></i> Download PDF</a>` : ''}
+                    </div>
+                `;
+                
+                container.appendChild(item);
+            });
+        }
+
+        // Toggle more details for publications
+        function toggleMoreDetails(button) {
+            const publicationItem = button.closest('.publication-item');
+            const shortDetails = publicationItem.querySelector('.short-details');
+            const moreContent = publicationItem.querySelector('.more-content');
+            const icon = button.querySelector('i');
+            
+            if (moreContent.style.display === 'none') {
+                shortDetails.style.display = 'none';
+                moreContent.style.display = 'inline';
+                button.querySelector('span').textContent = 'Less';
+                icon.className = 'fas fa-chevron-up';
+            } else {
+                shortDetails.style.display = 'inline';
+                moreContent.style.display = 'none';
+                button.querySelector('span').textContent = 'More';
+                icon.className = 'fas fa-chevron-down';
+            }
+        }
+
+        // Render Students
+        function renderStudents() {
+            const phdContainer = document.getElementById('phd-students');
+            const mastersContainer = document.getElementById('masters-students');
+            const alumniContainer = document.getElementById('alumni-students');
+            
+            // Clear existing content
+            phdContainer.innerHTML = '';
+            mastersContainer.innerHTML = '';
+            alumniContainer.innerHTML = '';
+            
+            // Filter students by type
+            const phdStudents = websiteData.students.filter(s => s.type === 'phd');
+            const mastersStudents = websiteData.students.filter(s => s.type === 'masters');
+            const alumniStudents = websiteData.students.filter(s => s.type === 'alumni');
+            
+            // Render PhD Students
+            renderStudentList(phdStudents, phdContainer, 'phd');
+            
+            // Render Masters Students
+            renderStudentList(mastersStudents, mastersContainer, 'masters');
+            
+            // Render Alumni
+            renderStudentList(alumniStudents, alumniContainer, 'alumni');
+        }
+
+        function renderStudentList(students, container, type) {
+            if (students.length === 0) {
+                container.innerHTML = `<p>No ${type} students available yet.</p>`;
+                return;
+            }
+            
+            students.forEach(student => {
+                const card = document.createElement('div');
+                card.className = 'student-card';
+                
+                // Use custom profile photo if available, otherwise use placeholder based on type
+                const studentPhoto = student.profile_photo || (
+                    type === 'phd' 
+                        ? 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80'
+                        : type === 'masters'
+                        ? 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80'
+                        : 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80'
+                );
+                
+                card.innerHTML = `
+                    <img src="${studentPhoto}" alt="${student.name}" class="student-img">
+                    <div class="student-info">
+                        <h3>${student.name}</h3>
+                        <p>${student.degree}</p>
+                        <span class="student-status ${type === 'alumni' ? 'status-alumni' : 'status-current'}">
+                            ${type === 'phd' ? 'PhD Candidate' : type === 'masters' ? 'Masters Student' : 'Alumni'}
+                        </span>
+                        ${student.research_focus ? `<p><strong>Research Focus:</strong> ${student.research_focus}</p>` : ''}
+                        ${student.current_work ? `<p><strong>Current Work:</strong> ${student.current_work}</p>` : ''}
+                    </div>
+                `;
+                
+                container.appendChild(card);
+            });
+        }
+
+        // Render Research Projects
+        function renderResearch() {
+            const container = document.getElementById('research-projects');
+            container.innerHTML = '';
+            
+            if (websiteData.research.length === 0) {
+                container.innerHTML = '<p>No research projects available yet.</p>';
+                return;
+            }
+            
+            websiteData.research.forEach(project => {
+                const card = document.createElement('div');
+                card.className = 'research-card';
+                
+                card.innerHTML = `
+                    <div class="research-header">
+                        <h3>${project.title}</h3>
+                    </div>
+                    <div class="research-body">
+                        <p>${project.description}</p>
+                        ${project.document_path ? `
+                            <div style="margin-top: 15px;">
+                                <a href="${project.document_path}" class="result-link" target="_blank">
+                                    <i class="fas fa-download"></i> Download Research Document
+                                </a>
+                            </div>
+                        ` : ''}
+                    </div>
+                `;
+                
+                container.appendChild(card);
+            });
+        }
+
+        // Render Notifications - Moving from left to right
+        function renderNotifications() {
+            const container = document.getElementById('notifications-container');
+            const banner = document.getElementById('notifications-banner');
+            
+            if (websiteData.notifications.length === 0) {
+                banner.style.display = 'none';
+                return;
+            }
+            
+            banner.style.display = 'block';
+            container.innerHTML = '';
+            
+            // Duplicate notifications for seamless scrolling
+            const allNotifications = [...websiteData.notifications, ...websiteData.notifications];
+            
+            allNotifications.forEach(notification => {
+                const item = document.createElement('div');
+                item.className = `notification-item ${notification.type}`;
+                item.innerHTML = `
+                    <strong>${notification.title}</strong> - ${notification.message}
+                `;
+                container.appendChild(item);
+            });
+        }
+
+        // Render Documents
+        function renderDocuments() {
+            const container = document.getElementById('documents-container');
+            container.innerHTML = '';
+            
+            if (websiteData.documents.length === 0) {
+                container.innerHTML = '<p>No documents available yet.</p>';
+                return;
+            }
+            
+            websiteData.documents.forEach(doc => {
+                const card = document.createElement('div');
+                card.className = 'document-card';
+                
+                // Determine icon based on file type
+                let icon = 'fas fa-file';
+                if (doc.file_type.includes('pdf')) icon = 'fas fa-file-pdf';
+                else if (doc.file_type.includes('word')) icon = 'fas fa-file-word';
+                
+                card.innerHTML = `
+                    <div class="document-icon">
+                        <i class="${icon}"></i>
+                    </div>
+                    <div class="document-content">
+                        <h3>${doc.title}</h3>
+                        <div class="document-meta">
+                            <span>${new Date(doc.created_at).toLocaleDateString()}</span>
+                            <span>${(doc.file_size / 1024 / 1024).toFixed(2)} MB</span>
+                        </div>
+                        ${doc.description ? `<p>${doc.description}</p>` : ''}
+                        <div class="document-links">
+                            <a href="${doc.file_path}" class="result-link" target="_blank"><i class="fas fa-download"></i> Download</a>
+                            <a href="${doc.file_path}" class="result-link" target="_blank"><i class="fas fa-eye"></i> Preview</a>
+                        </div>
+                    </div>
+                `;
+                
+                container.appendChild(card);
+            });
+        }
+
+        // Search functionality
+        function performSearch() {
+            const query = document.getElementById('searchQuery').value.toLowerCase();
+            const allItems = document.querySelectorAll('.publication-item');
+            let visibleCount = 0;
+            
+            allItems.forEach(item => {
+                const title = item.querySelector('.publication-title').textContent.toLowerCase();
+                const details = item.querySelector('.publication-details').textContent.toLowerCase();
+                
+                if (title.includes(query) || details.includes(query)) {
+                    item.style.display = 'block';
+                    visibleCount++;
+                } else {
+                    item.style.display = 'none';
+                }
+            });
+            
+            const resultsHeading = document.querySelector('#searchResults h3');
+            resultsHeading.textContent = `Found ${visibleCount} publication${visibleCount !== 1 ? 's' : ''}`;
+        }
+
+        // Initialize the website
+        document.addEventListener('DOMContentLoaded', function() {
+            // Load all data from API
+            loadWebsiteData();
+            
+            // Mobile Menu Toggle
+            document.querySelector('.mobile-menu').addEventListener('click', function() {
+                document.querySelector('nav ul').classList.toggle('show');
+            });
+
+            // Student Tabs
+            const tabBtns = document.querySelectorAll('.tab-btn');
+            const tabContents = document.querySelectorAll('.tab-content');
+
+            tabBtns.forEach(btn => {
+                btn.addEventListener('click', () => {
+                    tabBtns.forEach(b => b.classList.remove('active'));
+                    tabContents.forEach(c => c.classList.remove('active'));
+                    
+                    btn.classList.add('active');
+                    const tabId = btn.getAttribute('data-tab') + '-tab';
+                    document.getElementById(tabId).classList.add('active');
+                });
+            });
+
+            // Search functionality
+            document.getElementById('searchButton').addEventListener('click', performSearch);
+            document.getElementById('searchQuery').addEventListener('keyup', function(event) {
+                if (event.key === 'Enter') {
+                    performSearch();
+                }
+            });
+
+            // Smooth Scrolling
+            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+                anchor.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    
+                    const targetId = this.getAttribute('href');
+                    if (targetId === '#') return;
+                    
+                    const targetElement = document.querySelector(targetId);
+                    if (targetElement) {
+                        window.scrollTo({
+                            top: targetElement.offsetTop - 80,
+                            behavior: 'smooth'
+                        });
+                    }
+                });
+            });
+
+            // Contact Form
+            document.getElementById('contactForm').addEventListener('submit', function(e) {
+                e.preventDefault();
+                alert('Thank you for your message. We will get back to you soon!');
+                this.reset();
+            });
+
+            // Auto-refresh data every 5 minutes
+            setInterval(loadWebsiteData, 300000);
+        });
+
+        // Make toggleMoreDetails function available globally
+        window.toggleMoreDetails = toggleMoreDetails;
+    </script>
+</body>
+</html>
