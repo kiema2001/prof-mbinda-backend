@@ -1,29 +1,16 @@
 {
-  "name": "prof-mbinda-backend",
+  "name": "prof-mbinda-website",
   "version": "1.0.0",
-  "description": "Backend for Professor Mbinda website",
+  "description": "Professor Wilton Mbinda Research Website",
   "main": "server.js",
   "scripts": {
-    "start": "node server.js",
-    "dev": "nodemon server.js",
-    "init-db": "node init-db.js"
+    "build": "echo 'No build step required'"
   },
   "dependencies": {
-    "aws-sdk": "^2.1692.0",
-    "bcryptjs": "^2.4.3",
-    "body-parser": "^2.2.0",
-    "connect-sqlite3": "^0.9.16",
-    "cors": "^2.8.5",
-    "dotenv": "^17.2.3",
-    "express": "^4.18.2",
-    "express-session": "^1.18.2",
-    "helmet": "^8.1.0",
-    "jsonwebtoken": "^9.0.2",
-    "multer": "^1.4.4",
-    "nodemailer": "^7.0.10",
-    "sqlite3": "^5.1.6"
+    "mongoose": "^7.5.0",
+    "bcryptjs": "^2.4.3"
   },
-  "devDependencies": {
-    "nodemon": "2.0.22"
+  "engines": {
+    "node": ">=14.0.0"
   }
 }

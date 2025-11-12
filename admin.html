@@ -481,12 +481,12 @@
             <div id="loginAlert" class="alert" style="display: none;"></div>
             <form id="loginForm">
                 <div class="form-group">
-                    <label for="email">Username</label>
-                    <input type="text" id="email" name="email" required value="Wmbinda">
+                    <label for="email">Email</label>
+                    <input type="text" id="email" name="email" required value="admin@mbindalab.com">
                 </div>
                 <div class="form-group">
                     <label for="password">Password</label>
-                    <input type="password" id="password" name="password" required value="Mbinda@2025">
+                    <input type="password" id="password" name="password" required value="Admin@2025">
                 </div>
                 <button type="submit" class="btn btn-primary" style="width: 100%;">Login</button>
             </form>
@@ -556,11 +556,6 @@
                             <label for="contact">Contact Information</label>
                             <textarea id="contact" name="contact" rows="4" placeholder="Enter contact details..."></textarea>
                         </div>
-                        <div class="form-group">
-                            <label for="profile_photo">Profile Photo</label>
-                            <input type="file" id="profile_photo" name="profile_photo" accept="image/*">
-                            <div class="file-info">Current photo: <span id="currentPhoto">None</span></div>
-                        </div>
                         <button type="submit" class="btn btn-primary">Update Bio</button>
                     </form>
                 </div>
@@ -598,10 +593,6 @@
                             <label for="studentWork">Current Work</label>
                             <textarea id="studentWork" name="current_work" rows="3"></textarea>
                         </div>
-                        <div class="form-group">
-                            <label for="studentPhoto">Profile Photo</label>
-                            <input type="file" id="studentPhoto" name="profile_photo" accept="image/*">
-                        </div>
                         <button type="submit" class="btn btn-primary" id="studentSubmitBtn">Add Student</button>
                         <button type="button" class="btn btn-danger" id="studentCancelBtn" style="display: none;">Cancel</button>
                     </form>
@@ -633,10 +624,6 @@
                             <label for="pubLink">Link (optional)</label>
                             <input type="url" id="pubLink" name="link">
                         </div>
-                        <div class="form-group">
-                            <label for="pubDocument">Document (PDF, optional)</label>
-                            <input type="file" id="pubDocument" name="document" accept=".pdf,.doc,.docx">
-                        </div>
                         <button type="submit" class="btn btn-primary" id="publicationSubmitBtn">Add Publication</button>
                         <button type="button" class="btn btn-danger" id="publicationCancelBtn" style="display: none;">Cancel</button>
                     </form>
@@ -659,10 +646,6 @@
                         <div class="form-group">
                             <label for="researchDescription">Description</label>
                             <textarea id="researchDescription" name="description" rows="5" required></textarea>
-                        </div>
-                        <div class="form-group">
-                            <label for="researchDocument">Document (PDF, optional)</label>
-                            <input type="file" id="researchDocument" name="document" accept=".pdf,.doc,.docx">
                         </div>
                         <button type="submit" class="btn btn-primary" id="researchSubmitBtn">Add Research Project</button>
                         <button type="button" class="btn btn-danger" id="researchCancelBtn" style="display: none;">Cancel</button>
@@ -715,15 +698,11 @@
                             <label for="docDescription">Description</label>
                             <textarea id="docDescription" name="description" rows="3"></textarea>
                         </div>
-                        <div class="form-group">
-                            <label for="docFile">Document File</label>
-                            <input type="file" id="docFile" name="document" accept=".pdf,.doc,.docx,.txt" required>
-                        </div>
-                        <button type="submit" class="btn btn-primary">Upload Document</button>
+                        <button type="submit" class="btn btn-primary">Add Document</button>
                     </form>
                 </div>
                 <div class="content-section">
-                    <h3 class="section-header">Uploaded Documents</h3>
+                    <h3 class="section-header">Current Documents</h3>
                     <div id="documentsList" class="data-list"></div>
                 </div>
             </div>
@@ -735,6 +714,7 @@
         let isAuthenticated = false;
         let currentUser = null;
         let currentData = null;
+        let sessionId = null;
 
         // Check authentication status on page load
         document.addEventListener('DOMContentLoaded', function() {
@@ -760,7 +740,7 @@
         // Check server connection
         async function checkServerConnection() {
             try {
-                const response = await fetch('/api/health');
+                const response = await fetch('/.netlify/functions/api/health');
                 if (response.ok) {
                     document.getElementById('statusIndicator').className = 'status-indicator status-connected';
                     document.getElementById('statusText').textContent = 'Server connected';
@@ -776,14 +756,27 @@
         // Check authentication status
         async function checkAuthStatus() {
             try {
-                const response = await fetch('/api/auth/status');
+                const storedSessionId = localStorage.getItem('sessionId');
+                if (!storedSessionId) {
+                    showLogin();
+                    return;
+                }
+
+                const response = await fetch('/.netlify/functions/api/auth/status', {
+                    headers: {
+                        'x-session-id': storedSessionId
+                    }
+                });
+                
                 const data = await response.json();
                 
                 if (data.authenticated) {
                     isAuthenticated = true;
                     currentUser = data.user;
+                    sessionId = storedSessionId;
                     showDashboard();
                 } else {
+                    localStorage.removeItem('sessionId');
                     showLogin();
                 }
             } catch (error) {
@@ -801,7 +794,7 @@
             const alert = document.getElementById('loginAlert');
             
             try {
-                const response = await fetch('/api/login', {
+                const response = await fetch('/.netlify/functions/api/login', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'
@@ -814,6 +807,8 @@
                 if (data.success) {
                     isAuthenticated = true;
                     currentUser = data.user;
+                    sessionId = data.sessionId;
+                    localStorage.setItem('sessionId', data.sessionId);
                     showDashboard();
                 } else {
                     showAlert(alert, data.message, 'error');
@@ -827,8 +822,11 @@
         // Handle logout
         async function handleLogout() {
             try {
-                const response = await fetch('/api/logout', {
-                    method: 'POST'
+                const response = await fetch('/.netlify/functions/api/logout', {
+                    method: 'POST',
+                    headers: {
+                        'x-session-id': sessionId
+                    }
                 });
                 
                 const data = await response.json();
@@ -836,6 +834,8 @@
                 if (data.success) {
                     isAuthenticated = false;
                     currentUser = null;
+                    sessionId = null;
+                    localStorage.removeItem('sessionId');
                     showLogin();
                 }
             } catch (error) {
@@ -843,6 +843,8 @@
                 // Force logout on client side even if server fails
                 isAuthenticated = false;
                 currentUser = null;
+                sessionId = null;
+                localStorage.removeItem('sessionId');
                 showLogin();
             }
         }
@@ -892,7 +894,7 @@
         // Load dashboard data
         async function loadDashboardData() {
             try {
-                const response = await fetch('/api/data');
+                const response = await fetch('/.netlify/functions/api/data');
                 currentData = await response.json();
                 
                 // Update counts
@@ -905,7 +907,6 @@
                 if (currentData.bio) {
                     document.getElementById('bio').value = currentData.bio.bio || '';
                     document.getElementById('contact').value = currentData.bio.contact || '';
-                    document.getElementById('currentPhoto').textContent = currentData.bio.profile_photo ? 'Uploaded' : 'None';
                 }
                 
                 // Load all lists
@@ -971,24 +972,44 @@
             });
         }
 
+        // Helper function for authenticated requests
+        async function authenticatedFetch(url, options = {}) {
+            const defaultOptions = {
+                headers: {
+                    'Content-Type': 'application/json',
+                    'x-session-id': sessionId
+                }
+            };
+            
+            const mergedOptions = {
+                ...defaultOptions,
+                ...options,
+                headers: {
+                    ...defaultOptions.headers,
+                    ...options.headers
+                }
+            };
+            
+            return fetch(url, mergedOptions);
+        }
+
         // Bio form submission
         async function submitBioForm() {
-            const form = document.getElementById('bioForm');
-            const formData = new FormData(form);
+            const formData = {
+                bio: document.getElementById('bio').value,
+                contact: document.getElementById('contact').value
+            };
             
             try {
-                const response = await fetch('/api/data/bio', {
+                const response = await authenticatedFetch('/.netlify/functions/api/data/bio', {
                     method: 'POST',
-                    body: formData
+                    body: JSON.stringify(formData)
                 });
                 
                 const data = await response.json();
                 
                 if (data.success) {
                     alert('Bio updated successfully!');
-                    if (data.profile_photo) {
-                        document.getElementById('currentPhoto').textContent = 'Uploaded';
-                    }
                     loadDashboardData();
                 } else {
                     alert('Error: ' + data.message);
@@ -1001,17 +1022,25 @@
 
         // Student form submission
         async function submitStudentForm() {
-            const form = document.getElementById('studentForm');
-            const formData = new FormData(form);
+            const formData = {
+                name: document.getElementById('studentName').value,
+                degree: document.getElementById('studentDegree').value,
+                type: document.getElementById('studentType').value,
+                research_focus: document.getElementById('studentResearch').value,
+                current_work: document.getElementById('studentWork').value
+            };
+            
             const studentId = document.getElementById('studentId').value;
             
-            const url = studentId ? `/api/data/student/${studentId}` : '/api/data/student';
+            const url = studentId 
+                ? `/.netlify/functions/api/data/student/${studentId}`
+                : '/.netlify/functions/api/data/student';
             const method = studentId ? 'PUT' : 'POST';
             
             try {
-                const response = await fetch(url, {
+                const response = await authenticatedFetch(url, {
                     method: method,
-                    body: formData
+                    body: JSON.stringify(formData)
                 });
                 
                 const data = await response.json();
@@ -1039,7 +1068,7 @@
 
         // Edit student
         function editStudent(student) {
-            document.getElementById('studentId').value = student.id;
+            document.getElementById('studentId').value = student._id;
             document.getElementById('studentName').value = student.name;
             document.getElementById('studentDegree').value = student.degree;
             document.getElementById('studentType').value = student.type;
@@ -1057,7 +1086,7 @@
             if (!confirm('Are you sure you want to delete this student?')) return;
             
             try {
-                const response = await fetch(`/api/data/student/${id}`, {
+                const response = await authenticatedFetch(`/.netlify/functions/api/data/student/${id}`, {
                     method: 'DELETE'
                 });
                 
@@ -1097,7 +1126,7 @@
                         <button class="edit-btn" onclick="editStudent(${JSON.stringify(student).replace(/"/g, '&quot;')})">
                             <i class="fas fa-edit"></i>
                         </button>
-                        <button class="delete-btn" onclick="deleteStudent(${student.id})">
+                        <button class="delete-btn" onclick="deleteStudent('${student._id}')">
                             <i class="fas fa-trash"></i>
                         </button>
                     </div>
@@ -1108,17 +1137,24 @@
 
         // Publication form submission
         async function submitPublicationForm() {
-            const form = document.getElementById('publicationForm');
-            const formData = new FormData(form);
+            const formData = {
+                title: document.getElementById('pubTitle').value,
+                details: document.getElementById('pubDetails').value,
+                year: parseInt(document.getElementById('pubYear').value),
+                link: document.getElementById('pubLink').value
+            };
+            
             const publicationId = document.getElementById('publicationId').value;
             
-            const url = publicationId ? `/api/data/publication/${publicationId}` : '/api/data/publication';
+            const url = publicationId 
+                ? `/.netlify/functions/api/data/publication/${publicationId}`
+                : '/.netlify/functions/api/data/publication';
             const method = publicationId ? 'PUT' : 'POST';
             
             try {
-                const response = await fetch(url, {
+                const response = await authenticatedFetch(url, {
                     method: method,
-                    body: formData
+                    body: JSON.stringify(formData)
                 });
                 
                 const data = await response.json();
@@ -1146,7 +1182,7 @@
 
         // Edit publication
         function editPublication(publication) {
-            document.getElementById('publicationId').value = publication.id;
+            document.getElementById('publicationId').value = publication._id;
             document.getElementById('pubTitle').value = publication.title;
             document.getElementById('pubDetails').value = publication.details;
             document.getElementById('pubYear').value = publication.year;
@@ -1163,7 +1199,7 @@
             if (!confirm('Are you sure you want to delete this publication?')) return;
             
             try {
-                const response = await fetch(`/api/data/publication/${id}`, {
+                const response = await authenticatedFetch(`/.netlify/functions/api/data/publication/${id}`, {
                     method: 'DELETE'
                 });
                 
@@ -1198,13 +1234,12 @@
                         <strong>${pub.title}</strong> (${pub.year})
                         <br><small>${pub.details}</small>
                         ${pub.link ? `<br><a href="${pub.link}" target="_blank">View Link</a>` : ''}
-                        ${pub.document_path ? `<br><a href="${pub.document_path}" target="_blank">View Document</a>` : ''}
                     </div>
                     <div class="data-item-actions">
                         <button class="edit-btn" onclick="editPublication(${JSON.stringify(pub).replace(/"/g, '&quot;')})">
                             <i class="fas fa-edit"></i>
                         </button>
-                        <button class="delete-btn" onclick="deletePublication(${pub.id})">
+                        <button class="delete-btn" onclick="deletePublication('${pub._id}')">
                             <i class="fas fa-trash"></i>
                         </button>
                     </div>
@@ -1215,17 +1250,22 @@
 
         // Research form submission
         async function submitResearchForm() {
-            const form = document.getElementById('researchForm');
-            const formData = new FormData(form);
+            const formData = {
+                title: document.getElementById('researchTitle').value,
+                description: document.getElementById('researchDescription').value
+            };
+            
             const researchId = document.getElementById('researchId').value;
             
-            const url = researchId ? `/api/data/research/${researchId}` : '/api/data/research';
+            const url = researchId 
+                ? `/.netlify/functions/api/data/research/${researchId}`
+                : '/.netlify/functions/api/data/research';
             const method = researchId ? 'PUT' : 'POST';
             
             try {
-                const response = await fetch(url, {
+                const response = await authenticatedFetch(url, {
                     method: method,
-                    body: formData
+                    body: JSON.stringify(formData)
                 });
                 
                 const data = await response.json();
@@ -1253,7 +1293,7 @@
 
         // Edit research
         function editResearch(research) {
-            document.getElementById('researchId').value = research.id;
+            document.getElementById('researchId').value = research._id;
             document.getElementById('researchTitle').value = research.title;
             document.getElementById('researchDescription').value = research.description;
             
@@ -1268,7 +1308,7 @@
             if (!confirm('Are you sure you want to delete this research project?')) return;
             
             try {
-                const response = await fetch(`/api/data/research/${id}`, {
+                const response = await authenticatedFetch(`/.netlify/functions/api/data/research/${id}`, {
                     method: 'DELETE'
                 });
                 
@@ -1302,13 +1342,12 @@
                     <div class="data-item-content">
                         <strong>${project.title}</strong>
                         <br><small>${project.description}</small>
-                        ${project.document_path ? `<br><a href="${project.document_path}" target="_blank">View Document</a>` : ''}
                     </div>
                     <div class="data-item-actions">
                         <button class="edit-btn" onclick="editResearch(${JSON.stringify(project).replace(/"/g, '&quot;')})">
                             <i class="fas fa-edit"></i>
                         </button>
-                        <button class="delete-btn" onclick="deleteResearch(${project.id})">
+                        <button class="delete-btn" onclick="deleteResearch('${project._id}')">
                             <i class="fas fa-trash"></i>
                         </button>
                     </div>
@@ -1319,7 +1358,6 @@
 
         // Notification form submission
         async function submitNotificationForm() {
-            const form = document.getElementById('notificationForm');
             const formData = {
                 title: document.getElementById('notifTitle').value,
                 message: document.getElementById('notifMessage').value,
@@ -1327,11 +1365,8 @@
             };
 
             try {
-                const response = await fetch('/api/notifications', {
+                const response = await authenticatedFetch('/.netlify/functions/api/notifications', {
                     method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
                     body: JSON.stringify(formData)
                 });
                 
@@ -1355,7 +1390,7 @@
             if (!confirm('Are you sure you want to delete this notification?')) return;
             
             try {
-                const response = await fetch(`/api/notifications/${id}`, {
+                const response = await authenticatedFetch(`/.netlify/functions/api/notifications/${id}`, {
                     method: 'DELETE'
                 });
                 
@@ -1393,7 +1428,7 @@
                     <div class="notification-message">${notif.message}</div>
                     <div class="notification-date">${new Date(notif.created_at).toLocaleDateString()}</div>
                     <div style="margin-top: 10px;">
-                        <button class="btn btn-danger btn-sm" onclick="deleteNotification(${notif.id})">Delete</button>
+                        <button class="btn btn-danger btn-sm" onclick="deleteNotification('${notif._id}')">Delete</button>
                     </div>
                 `;
                 container.appendChild(item);
@@ -1402,27 +1437,29 @@
 
         // Document form submission
         async function submitDocumentForm() {
-            const form = document.getElementById('documentForm');
-            const formData = new FormData(form);
+            const formData = {
+                title: document.getElementById('docTitle').value,
+                description: document.getElementById('docDescription').value
+            };
             
             try {
-                const response = await fetch('/api/upload/document', {
+                const response = await authenticatedFetch('/.netlify/functions/api/documents', {
                     method: 'POST',
-                    body: formData
+                    body: JSON.stringify(formData)
                 });
                 
                 const data = await response.json();
                 
                 if (data.success) {
-                    alert('Document uploaded successfully!');
-                    form.reset();
+                    alert('Document added successfully!');
+                    document.getElementById('documentForm').reset();
                     loadDashboardData();
                 } else {
                     alert('Error: ' + data.message);
                 }
             } catch (error) {
-                console.error('Error uploading document:', error);
-                alert('Error uploading document');
+                console.error('Error adding document:', error);
+                alert('Error adding document');
             }
         }
 
@@ -1431,7 +1468,7 @@
             if (!confirm('Are you sure you want to delete this document?')) return;
             
             try {
-                const response = await fetch(`/api/documents/${id}`, {
+                const response = await authenticatedFetch(`/.netlify/functions/api/documents/${id}`, {
                     method: 'DELETE'
                 });
                 
@@ -1466,26 +1503,15 @@
                         <div class="document-title">${doc.title}</div>
                         <div class="document-description">${doc.description || 'No description'}</div>
                         <div class="file-info">
-                            ${doc.file_type} • ${formatFileSize(doc.file_size)} • 
                             ${new Date(doc.created_at).toLocaleDateString()}
                         </div>
                     </div>
                     <div class="document-actions">
-                        <a href="${doc.file_path}" class="document-link" target="_blank">Download</a>
-                        <button class="btn btn-danger btn-sm" onclick="deleteDocument(${doc.id})">Delete</button>
+                        <button class="btn btn-danger btn-sm" onclick="deleteDocument('${doc._id}')">Delete</button>
                     </div>
                 `;
                 container.appendChild(item);
             });
-        }
-
-        // Format file size
-        function formatFileSize(bytes) {
-            if (!bytes || bytes === 0) return '0 Bytes';
-            const k = 1024;
-            const sizes = ['Bytes', 'KB', 'MB', 'GB'];
-            const i = Math.floor(Math.log(bytes) / Math.log(k));
-            return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
         }
 
         // Make functions available globally
