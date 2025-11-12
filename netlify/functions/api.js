@@ -119,6 +119,10 @@ function requireAuth(request) {
     return getSession(sessionId);
 }
 
+// Simple file upload simulation (in production, use Cloudinary, AWS S3, etc.)
+// For demo purposes, we'll store base64 images in MongoDB
+const uploadedFiles = new Map();
+
 // Main handler
 exports.handler = async function(event, context) {
     // Handle CORS
@@ -269,9 +273,9 @@ exports.handler = async function(event, context) {
         // Protected routes
         if (path === '/data/bio' && method === 'POST') {
             const session = requireAuth(event);
-            const { bio, contact } = JSON.parse(event.body);
+            const { bio, contact, profile_photo } = JSON.parse(event.body);
             
-            await Profile.findOneAndUpdate({}, { bio, contact }, { upsert: true });
+            await Profile.findOneAndUpdate({}, { bio, contact, profile_photo }, { upsert: true });
             return {
                 statusCode: 200,
                 headers,
@@ -281,9 +285,9 @@ exports.handler = async function(event, context) {
         
         if (path === '/data/student' && method === 'POST') {
             const session = requireAuth(event);
-            const { name, degree, type, research_focus, current_work } = JSON.parse(event.body);
+            const { name, degree, type, research_focus, current_work, profile_photo } = JSON.parse(event.body);
             
-            const student = await Student.create({ name, degree, type, research_focus, current_work });
+            const student = await Student.create({ name, degree, type, research_focus, current_work, profile_photo });
             return {
                 statusCode: 200,
                 headers,
@@ -294,9 +298,9 @@ exports.handler = async function(event, context) {
         if (path.startsWith('/data/student/') && method === 'PUT') {
             const session = requireAuth(event);
             const id = path.split('/').pop();
-            const { name, degree, type, research_focus, current_work } = JSON.parse(event.body);
+            const { name, degree, type, research_focus, current_work, profile_photo } = JSON.parse(event.body);
             
-            await Student.findByIdAndUpdate(id, { name, degree, type, research_focus, current_work });
+            await Student.findByIdAndUpdate(id, { name, degree, type, research_focus, current_work, profile_photo });
             return {
                 statusCode: 200,
                 headers,
@@ -414,8 +418,69 @@ exports.handler = async function(event, context) {
             };
         }
         
-        // For file uploads, you'll need a separate solution since Netlify Functions have limitations
-        // Consider using a cloud storage service like Cloudinary or AWS S3
+        // File upload endpoint (base64 images)
+        if (path === '/upload' && method === 'POST') {
+            const session = requireAuth(event);
+            const { image, filename, type } = JSON.parse(event.body);
+            
+            if (!image) {
+                return {
+                    statusCode: 400,
+                    headers,
+                    body: JSON.stringify({ success: false, message: 'No image provided' })
+                };
+            }
+            
+            // Generate unique filename
+            const fileId = Math.random().toString(36).substring(2) + Date.now().toString(36);
+            const fileExtension = filename.split('.').pop() || 'jpg';
+            const finalFilename = `${fileId}.${fileExtension}`;
+            
+            // Store in memory (in production, use cloud storage)
+            uploadedFiles.set(finalFilename, {
+                data: image,
+                type: type || 'image/jpeg',
+                uploadedAt: new Date()
+            });
+            
+            // Return the file URL (simulated)
+            const fileUrl = `data:${type || 'image/jpeg'};base64,${image}`;
+            
+            return {
+                statusCode: 200,
+                headers,
+                body: JSON.stringify({ 
+                    success: true, 
+                    message: 'File uploaded successfully',
+                    filename: finalFilename,
+                    url: fileUrl
+                })
+            };
+        }
+        
+        // Get uploaded file
+        if (path.startsWith('/uploads/') && method === 'GET') {
+            const filename = path.split('/').pop();
+            const file = uploadedFiles.get(filename);
+            
+            if (!file) {
+                return {
+                    statusCode: 404,
+                    headers,
+                    body: JSON.stringify({ success: false, message: 'File not found' })
+                };
+            }
+            
+            return {
+                statusCode: 200,
+                headers: {
+                    'Content-Type': file.type,
+                    'Access-Control-Allow-Origin': '*'
+                },
+                body: file.data,
+                isBase64Encoded: true
+            };
+        }
         
         return {
             statusCode: 404,
