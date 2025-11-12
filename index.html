@@ -1243,7 +1243,7 @@
         async function loadWebsiteData() {
             showLoading();
             try {
-                const response = await fetch('/api/data');
+                const response = await fetch('/.netlify/functions/api/data');
                 if (!response.ok) throw new Error('Failed to fetch website data');
                 
                 const data = await response.json();
