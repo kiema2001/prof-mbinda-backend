@@ -119,9 +119,8 @@ function requireAuth(request) {
     return getSession(sessionId);
 }
 
-// Simple file upload simulation (in production, use Cloudinary, AWS S3, etc.)
-// For demo purposes, we'll store base64 images in MongoDB
-const uploadedFiles = new Map();
+// Simple file upload simulation - store base64 directly in database
+// No size limits, store as-is
 
 // Main handler
 exports.handler = async function(event, context) {
@@ -394,7 +393,8 @@ exports.handler = async function(event, context) {
             };
         }
         
-        if (path === '/notifications' && method === 'POST') {
+        // FIXED: Notification endpoints
+        if (path === '/data/notifications' && method === 'POST') {
             const session = requireAuth(event);
             const { title, message, type } = JSON.parse(event.body);
             
@@ -406,7 +406,7 @@ exports.handler = async function(event, context) {
             };
         }
         
-        if (path.startsWith('/notifications/') && method === 'DELETE') {
+        if (path.startsWith('/data/notifications/') && method === 'DELETE') {
             const session = requireAuth(event);
             const id = path.split('/').pop();
             
@@ -418,10 +418,10 @@ exports.handler = async function(event, context) {
             };
         }
         
-        // File upload endpoint (base64 images)
+        // FIXED: File upload endpoint - simplified, no size limits
         if (path === '/upload' && method === 'POST') {
             const session = requireAuth(event);
-            const { image, filename, type } = JSON.parse(event.body);
+            const { image, filename } = JSON.parse(event.body);
             
             if (!image) {
                 return {
@@ -431,20 +431,9 @@ exports.handler = async function(event, context) {
                 };
             }
             
-            // Generate unique filename
-            const fileId = Math.random().toString(36).substring(2) + Date.now().toString(36);
-            const fileExtension = filename.split('.').pop() || 'jpg';
-            const finalFilename = `${fileId}.${fileExtension}`;
-            
-            // Store in memory (in production, use cloud storage)
-            uploadedFiles.set(finalFilename, {
-                data: image,
-                type: type || 'image/jpeg',
-                uploadedAt: new Date()
-            });
-            
-            // Return the file URL (simulated)
-            const fileUrl = `data:${type || 'image/jpeg'};base64,${image}`;
+            // No size limits - accept any image as-is
+            // Return the full data URL for direct use
+            const fileUrl = `data:image/jpeg;base64,${image}`;
             
             return {
                 statusCode: 200,
@@ -452,33 +441,8 @@ exports.handler = async function(event, context) {
                 body: JSON.stringify({ 
                     success: true, 
                     message: 'File uploaded successfully',
-                    filename: finalFilename,
                     url: fileUrl
                 })
-            };
-        }
-        
-        // Get uploaded file
-        if (path.startsWith('/uploads/') && method === 'GET') {
-            const filename = path.split('/').pop();
-            const file = uploadedFiles.get(filename);
-            
-            if (!file) {
-                return {
-                    statusCode: 404,
-                    headers,
-                    body: JSON.stringify({ success: false, message: 'File not found' })
-                };
-            }
-            
-            return {
-                statusCode: 200,
-                headers: {
-                    'Content-Type': file.type,
-                    'Access-Control-Allow-Origin': '*'
-                },
-                body: file.data,
-                isBase64Encoded: true
             };
         }
         
