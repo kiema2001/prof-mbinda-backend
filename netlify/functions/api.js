@@ -120,7 +120,7 @@ function requireAuth(request) {
 }
 
 // Simple file upload simulation - store base64 directly in database
-// No size limits, store as-is
+// For production, use Cloudinary, AWS S3, etc.
 
 // Main handler
 exports.handler = async function(event, context) {
@@ -393,8 +393,7 @@ exports.handler = async function(event, context) {
             };
         }
         
-        // FIXED: Notification endpoints
-        if (path === '/data/notifications' && method === 'POST') {
+        if (path === '/notifications' && method === 'POST') {
             const session = requireAuth(event);
             const { title, message, type } = JSON.parse(event.body);
             
@@ -406,7 +405,7 @@ exports.handler = async function(event, context) {
             };
         }
         
-        if (path.startsWith('/data/notifications/') && method === 'DELETE') {
+        if (path.startsWith('/notifications/') && method === 'DELETE') {
             const session = requireAuth(event);
             const id = path.split('/').pop();
             
@@ -418,7 +417,7 @@ exports.handler = async function(event, context) {
             };
         }
         
-        // FIXED: File upload endpoint - simplified, no size limits
+        // File upload endpoint - store base64 directly
         if (path === '/upload' && method === 'POST') {
             const session = requireAuth(event);
             const { image, filename } = JSON.parse(event.body);
@@ -431,8 +430,7 @@ exports.handler = async function(event, context) {
                 };
             }
             
-            // No size limits - accept any image as-is
-            // Return the full data URL for direct use
+            // Create data URL from base64
             const fileUrl = `data:image/jpeg;base64,${image}`;
             
             return {
