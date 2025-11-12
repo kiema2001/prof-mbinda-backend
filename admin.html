@@ -938,6 +938,10 @@
                     })
                 });
                 
+                if (!response.ok) {
+                    throw new Error(`Upload failed: ${response.status}`);
+                }
+                
                 const data = await response.json();
                 return data;
             } catch (error) {
@@ -1261,20 +1265,14 @@
             }
         }
 
-        // Student form submission
+        // Student form submission - SIMPLIFIED VERSION
         async function submitStudentForm() {
-            let profile_photo = document.getElementById('studentPhotoData').value;
             const studentId = document.getElementById('studentId').value;
+            let profile_photo = document.getElementById('studentPhotoData').value;
             
-            // If new photo was uploaded, process it
+            // If we have a new photo, use it directly as base64 data URL
             if (profile_photo) {
-                const uploadResult = await uploadImage(profile_photo, `student-${studentId || 'new'}.jpg`);
-                if (uploadResult && uploadResult.success) {
-                    profile_photo = uploadResult.url;
-                } else {
-                    alert('Error uploading photo. Please try again.');
-                    return;
-                }
+                profile_photo = `data:image/jpeg;base64,${profile_photo}`;
             } else if (studentId) {
                 // Keep existing photo if editing and no new photo uploaded
                 const existingStudent = currentData.students.find(s => s._id === studentId);
