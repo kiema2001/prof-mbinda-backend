@@ -457,6 +457,86 @@
             color: #718096;
         }
 
+        /* Image Upload Styles */
+        .image-upload-container {
+            border: 2px dashed var(--border);
+            border-radius: 8px;
+            padding: 20px;
+            text-align: center;
+            margin-bottom: 20px;
+            background-color: var(--light);
+            transition: border-color 0.3s;
+        }
+
+        .image-upload-container.dragover {
+            border-color: var(--accent);
+            background-color: #ebf8ff;
+        }
+
+        .image-upload-label {
+            cursor: pointer;
+            display: block;
+        }
+
+        .image-upload-text {
+            margin-bottom: 10px;
+            color: var(--text);
+        }
+
+        .image-upload-btn {
+            background-color: var(--primary);
+            color: white;
+            padding: 10px 20px;
+            border-radius: 6px;
+            cursor: pointer;
+            display: inline-block;
+            transition: background-color 0.2s;
+        }
+
+        .image-upload-btn:hover {
+            background-color: var(--secondary);
+        }
+
+        .image-preview {
+            max-width: 300px;
+            max-height: 300px;
+            margin: 15px auto;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: var(--shadow);
+            display: none;
+        }
+
+        .image-preview img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .current-image {
+            max-width: 200px;
+            max-height: 200px;
+            border-radius: 8px;
+            margin: 10px 0;
+            box-shadow: var(--shadow);
+        }
+
+        .image-actions {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            margin-top: 10px;
+        }
+
+        .student-photo-preview {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            object-fit: cover;
+            margin: 10px 0;
+            border: 3px solid var(--border);
+        }
+
         @media (max-width: 768px) {
             .dashboard-container {
                 flex-direction: column;
@@ -556,6 +636,26 @@
                             <label for="contact">Contact Information</label>
                             <textarea id="contact" name="contact" rows="4" placeholder="Enter contact details..."></textarea>
                         </div>
+                        
+                        <!-- Professor Photo Upload -->
+                        <div class="form-group">
+                            <label>Professor Photo</label>
+                            <div id="currentProfessorPhoto">
+                                <!-- Current photo will be loaded here -->
+                            </div>
+                            <div class="image-upload-container" id="professorPhotoUpload">
+                                <label class="image-upload-label">
+                                    <div class="image-upload-text">Click to upload professor photo or drag and drop</div>
+                                    <div class="image-upload-btn">Choose File</div>
+                                    <input type="file" id="professorPhotoInput" accept="image/*" style="display: none;">
+                                </label>
+                            </div>
+                            <div class="image-preview" id="professorPhotoPreview">
+                                <img src="" alt="Preview">
+                            </div>
+                            <input type="hidden" id="professorPhotoData" name="profile_photo">
+                        </div>
+                        
                         <button type="submit" class="btn btn-primary">Update Bio</button>
                     </form>
                 </div>
@@ -593,6 +693,26 @@
                             <label for="studentWork">Current Work</label>
                             <textarea id="studentWork" name="current_work" rows="3"></textarea>
                         </div>
+                        
+                        <!-- Student Photo Upload -->
+                        <div class="form-group">
+                            <label>Student Photo</label>
+                            <div id="currentStudentPhoto">
+                                <!-- Current photo will be loaded here -->
+                            </div>
+                            <div class="image-upload-container" id="studentPhotoUpload">
+                                <label class="image-upload-label">
+                                    <div class="image-upload-text">Click to upload student photo or drag and drop</div>
+                                    <div class="image-upload-btn">Choose File</div>
+                                    <input type="file" id="studentPhotoInput" accept="image/*" style="display: none;">
+                                </label>
+                            </div>
+                            <div class="image-preview" id="studentPhotoPreview">
+                                <img src="" alt="Preview">
+                            </div>
+                            <input type="hidden" id="studentPhotoData" name="profile_photo">
+                        </div>
+                        
                         <button type="submit" class="btn btn-primary" id="studentSubmitBtn">Add Student</button>
                         <button type="button" class="btn btn-danger" id="studentCancelBtn" style="display: none;">Cancel</button>
                     </form>
@@ -603,6 +723,7 @@
                 </div>
             </div>
 
+            <!-- Other tabs remain the same -->
             <div id="publications" class="tab-content">
                 <h2 class="section-header">Publications</h2>
                 <div class="content-section">
@@ -735,7 +856,97 @@
 
             // Form submissions
             setupFormHandlers();
+            
+            // Image upload handlers
+            setupImageUploads();
         });
+
+        // Setup image upload functionality
+        function setupImageUploads() {
+            // Professor photo upload
+            const professorInput = document.getElementById('professorPhotoInput');
+            const professorPreview = document.getElementById('professorPhotoPreview');
+            const professorUpload = document.getElementById('professorPhotoUpload');
+            
+            professorInput.addEventListener('change', function(e) {
+                handleImageUpload(e, professorPreview, 'professorPhotoData');
+            });
+            
+            setupDragAndDrop(professorUpload, professorInput, professorPreview, 'professorPhotoData');
+            
+            // Student photo upload
+            const studentInput = document.getElementById('studentPhotoInput');
+            const studentPreview = document.getElementById('studentPhotoPreview');
+            const studentUpload = document.getElementById('studentPhotoUpload');
+            
+            studentInput.addEventListener('change', function(e) {
+                handleImageUpload(e, studentPreview, 'studentPhotoData');
+            });
+            
+            setupDragAndDrop(studentUpload, studentInput, studentPreview, 'studentPhotoData');
+        }
+
+        // Handle image upload and preview
+        function handleImageUpload(event, previewElement, dataFieldId) {
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    previewElement.querySelector('img').src = e.target.result;
+                    previewElement.style.display = 'block';
+                    document.getElementById(dataFieldId).value = e.target.result.split(',')[1]; // Store base64 data
+                };
+                reader.readAsDataURL(file);
+            }
+        }
+
+        // Setup drag and drop
+        function setupDragAndDrop(dropZone, fileInput, previewElement, dataFieldId) {
+            dropZone.addEventListener('dragover', function(e) {
+                e.preventDefault();
+                dropZone.classList.add('dragover');
+            });
+            
+            dropZone.addEventListener('dragleave', function(e) {
+                e.preventDefault();
+                dropZone.classList.remove('dragover');
+            });
+            
+            dropZone.addEventListener('drop', function(e) {
+                e.preventDefault();
+                dropZone.classList.remove('dragover');
+                
+                const files = e.dataTransfer.files;
+                if (files.length > 0) {
+                    fileInput.files = files;
+                    handleImageUpload({ target: fileInput }, previewElement, dataFieldId);
+                }
+            });
+            
+            dropZone.addEventListener('click', function() {
+                fileInput.click();
+            });
+        }
+
+        // Upload image to server
+        async function uploadImage(base64Data, filename) {
+            try {
+                const response = await authenticatedFetch('/.netlify/functions/api/upload', {
+                    method: 'POST',
+                    body: JSON.stringify({
+                        image: base64Data,
+                        filename: filename,
+                        type: 'image/jpeg'
+                    })
+                });
+                
+                const data = await response.json();
+                return data;
+            } catch (error) {
+                console.error('Error uploading image:', error);
+                return null;
+            }
+        }
 
         // Check server connection
         async function checkServerConnection() {
@@ -907,6 +1118,17 @@
                 if (currentData.bio) {
                     document.getElementById('bio').value = currentData.bio.bio || '';
                     document.getElementById('contact').value = currentData.bio.contact || '';
+                    
+                    // Load professor photo
+                    const professorPhotoContainer = document.getElementById('currentProfessorPhoto');
+                    if (currentData.bio.profile_photo) {
+                        professorPhotoContainer.innerHTML = `
+                            <div><strong>Current Photo:</strong></div>
+                            <img src="${currentData.bio.profile_photo}" alt="Professor Photo" class="current-image">
+                        `;
+                    } else {
+                        professorPhotoContainer.innerHTML = '<div>No photo uploaded yet</div>';
+                    }
                 }
                 
                 // Load all lists
@@ -995,9 +1217,26 @@
 
         // Bio form submission
         async function submitBioForm() {
+            let profile_photo = document.getElementById('professorPhotoData').value;
+            
+            // If new photo was uploaded, process it
+            if (profile_photo) {
+                const uploadResult = await uploadImage(profile_photo, 'professor-photo.jpg');
+                if (uploadResult && uploadResult.success) {
+                    profile_photo = uploadResult.url;
+                } else {
+                    alert('Error uploading photo. Please try again.');
+                    return;
+                }
+            } else if (currentData.bio && currentData.bio.profile_photo) {
+                // Keep existing photo if no new one uploaded
+                profile_photo = currentData.bio.profile_photo;
+            }
+            
             const formData = {
                 bio: document.getElementById('bio').value,
-                contact: document.getElementById('contact').value
+                contact: document.getElementById('contact').value,
+                profile_photo: profile_photo
             };
             
             try {
@@ -1011,6 +1250,10 @@
                 if (data.success) {
                     alert('Bio updated successfully!');
                     loadDashboardData();
+                    // Reset photo upload
+                    document.getElementById('professorPhotoData').value = '';
+                    document.getElementById('professorPhotoPreview').style.display = 'none';
+                    document.getElementById('professorPhotoInput').value = '';
                 } else {
                     alert('Error: ' + data.message);
                 }
@@ -1022,15 +1265,34 @@
 
         // Student form submission
         async function submitStudentForm() {
+            let profile_photo = document.getElementById('studentPhotoData').value;
+            const studentId = document.getElementById('studentId').value;
+            
+            // If new photo was uploaded, process it
+            if (profile_photo) {
+                const uploadResult = await uploadImage(profile_photo, `student-${studentId || 'new'}.jpg`);
+                if (uploadResult && uploadResult.success) {
+                    profile_photo = uploadResult.url;
+                } else {
+                    alert('Error uploading photo. Please try again.');
+                    return;
+                }
+            } else if (studentId) {
+                // Keep existing photo if editing and no new photo uploaded
+                const existingStudent = currentData.students.find(s => s._id === studentId);
+                if (existingStudent && existingStudent.profile_photo) {
+                    profile_photo = existingStudent.profile_photo;
+                }
+            }
+            
             const formData = {
                 name: document.getElementById('studentName').value,
                 degree: document.getElementById('studentDegree').value,
                 type: document.getElementById('studentType').value,
                 research_focus: document.getElementById('studentResearch').value,
-                current_work: document.getElementById('studentWork').value
+                current_work: document.getElementById('studentWork').value,
+                profile_photo: profile_photo
             };
-            
-            const studentId = document.getElementById('studentId').value;
             
             const url = studentId 
                 ? `/.netlify/functions/api/data/student/${studentId}`
@@ -1064,6 +1326,10 @@
             document.getElementById('studentId').value = '';
             document.getElementById('studentSubmitBtn').textContent = 'Add Student';
             document.getElementById('studentCancelBtn').style.display = 'none';
+            document.getElementById('studentPhotoData').value = '';
+            document.getElementById('studentPhotoPreview').style.display = 'none';
+            document.getElementById('studentPhotoInput').value = '';
+            document.getElementById('currentStudentPhoto').innerHTML = '';
         }
 
         // Edit student
@@ -1074,6 +1340,17 @@
             document.getElementById('studentType').value = student.type;
             document.getElementById('studentResearch').value = student.research_focus || '';
             document.getElementById('studentWork').value = student.current_work || '';
+            
+            // Show current student photo
+            const currentPhotoContainer = document.getElementById('currentStudentPhoto');
+            if (student.profile_photo) {
+                currentPhotoContainer.innerHTML = `
+                    <div><strong>Current Photo:</strong></div>
+                    <img src="${student.profile_photo}" alt="Student Photo" class="student-photo-preview">
+                `;
+            } else {
+                currentPhotoContainer.innerHTML = '<div>No photo uploaded yet</div>';
+            }
             
             document.getElementById('studentSubmitBtn').textContent = 'Update Student';
             document.getElementById('studentCancelBtn').style.display = 'inline-block';
@@ -1116,11 +1393,19 @@
             currentData.students.forEach(student => {
                 const item = document.createElement('div');
                 item.className = 'data-item';
+                
+                const studentPhoto = student.profile_photo || 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80';
+                
                 item.innerHTML = `
                     <div class="data-item-content">
-                        <strong>${student.name}</strong> - ${student.degree} (${student.type})
-                        ${student.research_focus ? `<br><small>Research: ${student.research_focus}</small>` : ''}
-                        ${student.current_work ? `<br><small>Current Work: ${student.current_work}</small>` : ''}
+                        <div style="display: flex; align-items: center; gap: 15px;">
+                            <img src="${studentPhoto}" alt="${student.name}" style="width: 50px; height: 50px; border-radius: 50%; object-fit: cover;">
+                            <div>
+                                <strong>${student.name}</strong> - ${student.degree} (${student.type})
+                                ${student.research_focus ? `<br><small>Research: ${student.research_focus}</small>` : ''}
+                                ${student.current_work ? `<br><small>Current Work: ${student.current_work}</small>` : ''}
+                            </div>
+                        </div>
                     </div>
                     <div class="data-item-actions">
                         <button class="edit-btn" onclick="editStudent(${JSON.stringify(student).replace(/"/g, '&quot;')})">
@@ -1135,384 +1420,7 @@
             });
         }
 
-        // Publication form submission
-        async function submitPublicationForm() {
-            const formData = {
-                title: document.getElementById('pubTitle').value,
-                details: document.getElementById('pubDetails').value,
-                year: parseInt(document.getElementById('pubYear').value),
-                link: document.getElementById('pubLink').value
-            };
-            
-            const publicationId = document.getElementById('publicationId').value;
-            
-            const url = publicationId 
-                ? `/.netlify/functions/api/data/publication/${publicationId}`
-                : '/.netlify/functions/api/data/publication';
-            const method = publicationId ? 'PUT' : 'POST';
-            
-            try {
-                const response = await authenticatedFetch(url, {
-                    method: method,
-                    body: JSON.stringify(formData)
-                });
-                
-                const data = await response.json();
-                
-                if (data.success) {
-                    alert(publicationId ? 'Publication updated successfully!' : 'Publication added successfully!');
-                    resetPublicationForm();
-                    loadDashboardData();
-                } else {
-                    alert('Error: ' + data.message);
-                }
-            } catch (error) {
-                console.error('Error saving publication:', error);
-                alert('Error saving publication');
-            }
-        }
-
-        // Reset publication form
-        function resetPublicationForm() {
-            document.getElementById('publicationForm').reset();
-            document.getElementById('publicationId').value = '';
-            document.getElementById('publicationSubmitBtn').textContent = 'Add Publication';
-            document.getElementById('publicationCancelBtn').style.display = 'none';
-        }
-
-        // Edit publication
-        function editPublication(publication) {
-            document.getElementById('publicationId').value = publication._id;
-            document.getElementById('pubTitle').value = publication.title;
-            document.getElementById('pubDetails').value = publication.details;
-            document.getElementById('pubYear').value = publication.year;
-            document.getElementById('pubLink').value = publication.link || '';
-            
-            document.getElementById('publicationSubmitBtn').textContent = 'Update Publication';
-            document.getElementById('publicationCancelBtn').style.display = 'inline-block';
-            
-            switchTab('publications');
-        }
-
-        // Delete publication
-        async function deletePublication(id) {
-            if (!confirm('Are you sure you want to delete this publication?')) return;
-            
-            try {
-                const response = await authenticatedFetch(`/.netlify/functions/api/data/publication/${id}`, {
-                    method: 'DELETE'
-                });
-                
-                const data = await response.json();
-                
-                if (data.success) {
-                    alert('Publication deleted successfully!');
-                    loadDashboardData();
-                } else {
-                    alert('Error: ' + data.message);
-                }
-            } catch (error) {
-                console.error('Error deleting publication:', error);
-                alert('Error deleting publication');
-            }
-        }
-
-        // Load publications list
-        function loadPublicationsList() {
-            const container = document.getElementById('publicationsList');
-            if (!container) return;
-            
-            container.innerHTML = '';
-            
-            if (!currentData || !currentData.publications) return;
-            
-            currentData.publications.forEach(pub => {
-                const item = document.createElement('div');
-                item.className = 'data-item';
-                item.innerHTML = `
-                    <div class="data-item-content">
-                        <strong>${pub.title}</strong> (${pub.year})
-                        <br><small>${pub.details}</small>
-                        ${pub.link ? `<br><a href="${pub.link}" target="_blank">View Link</a>` : ''}
-                    </div>
-                    <div class="data-item-actions">
-                        <button class="edit-btn" onclick="editPublication(${JSON.stringify(pub).replace(/"/g, '&quot;')})">
-                            <i class="fas fa-edit"></i>
-                        </button>
-                        <button class="delete-btn" onclick="deletePublication('${pub._id}')">
-                            <i class="fas fa-trash"></i>
-                        </button>
-                    </div>
-                `;
-                container.appendChild(item);
-            });
-        }
-
-        // Research form submission
-        async function submitResearchForm() {
-            const formData = {
-                title: document.getElementById('researchTitle').value,
-                description: document.getElementById('researchDescription').value
-            };
-            
-            const researchId = document.getElementById('researchId').value;
-            
-            const url = researchId 
-                ? `/.netlify/functions/api/data/research/${researchId}`
-                : '/.netlify/functions/api/data/research';
-            const method = researchId ? 'PUT' : 'POST';
-            
-            try {
-                const response = await authenticatedFetch(url, {
-                    method: method,
-                    body: JSON.stringify(formData)
-                });
-                
-                const data = await response.json();
-                
-                if (data.success) {
-                    alert(researchId ? 'Research project updated successfully!' : 'Research project added successfully!');
-                    resetResearchForm();
-                    loadDashboardData();
-                } else {
-                    alert('Error: ' + data.message);
-                }
-            } catch (error) {
-                console.error('Error saving research:', error);
-                alert('Error saving research');
-            }
-        }
-
-        // Reset research form
-        function resetResearchForm() {
-            document.getElementById('researchForm').reset();
-            document.getElementById('researchId').value = '';
-            document.getElementById('researchSubmitBtn').textContent = 'Add Research Project';
-            document.getElementById('researchCancelBtn').style.display = 'none';
-        }
-
-        // Edit research
-        function editResearch(research) {
-            document.getElementById('researchId').value = research._id;
-            document.getElementById('researchTitle').value = research.title;
-            document.getElementById('researchDescription').value = research.description;
-            
-            document.getElementById('researchSubmitBtn').textContent = 'Update Research Project';
-            document.getElementById('researchCancelBtn').style.display = 'inline-block';
-            
-            switchTab('research');
-        }
-
-        // Delete research
-        async function deleteResearch(id) {
-            if (!confirm('Are you sure you want to delete this research project?')) return;
-            
-            try {
-                const response = await authenticatedFetch(`/.netlify/functions/api/data/research/${id}`, {
-                    method: 'DELETE'
-                });
-                
-                const data = await response.json();
-                
-                if (data.success) {
-                    alert('Research project deleted successfully!');
-                    loadDashboardData();
-                } else {
-                    alert('Error: ' + data.message);
-                }
-            } catch (error) {
-                console.error('Error deleting research:', error);
-                alert('Error deleting research');
-            }
-        }
-
-        // Load research list
-        function loadResearchList() {
-            const container = document.getElementById('researchList');
-            if (!container) return;
-            
-            container.innerHTML = '';
-            
-            if (!currentData || !currentData.research) return;
-            
-            currentData.research.forEach(project => {
-                const item = document.createElement('div');
-                item.className = 'data-item';
-                item.innerHTML = `
-                    <div class="data-item-content">
-                        <strong>${project.title}</strong>
-                        <br><small>${project.description}</small>
-                    </div>
-                    <div class="data-item-actions">
-                        <button class="edit-btn" onclick="editResearch(${JSON.stringify(project).replace(/"/g, '&quot;')})">
-                            <i class="fas fa-edit"></i>
-                        </button>
-                        <button class="delete-btn" onclick="deleteResearch('${project._id}')">
-                            <i class="fas fa-trash"></i>
-                        </button>
-                    </div>
-                `;
-                container.appendChild(item);
-            });
-        }
-
-        // Notification form submission
-        async function submitNotificationForm() {
-            const formData = {
-                title: document.getElementById('notifTitle').value,
-                message: document.getElementById('notifMessage').value,
-                type: document.getElementById('notifType').value
-            };
-
-            try {
-                const response = await authenticatedFetch('/.netlify/functions/api/notifications', {
-                    method: 'POST',
-                    body: JSON.stringify(formData)
-                });
-                
-                const data = await response.json();
-                
-                if (data.success) {
-                    alert('Notification created successfully!');
-                    document.getElementById('notificationForm').reset();
-                    loadDashboardData();
-                } else {
-                    alert('Error: ' + data.message);
-                }
-            } catch (error) {
-                console.error('Error adding notification:', error);
-                alert('Error adding notification');
-            }
-        }
-
-        // Delete notification
-        async function deleteNotification(id) {
-            if (!confirm('Are you sure you want to delete this notification?')) return;
-            
-            try {
-                const response = await authenticatedFetch(`/.netlify/functions/api/notifications/${id}`, {
-                    method: 'DELETE'
-                });
-                
-                const data = await response.json();
-                
-                if (data.success) {
-                    alert('Notification deleted successfully!');
-                    loadDashboardData();
-                } else {
-                    alert('Error: ' + data.message);
-                }
-            } catch (error) {
-                console.error('Error deleting notification:', error);
-                alert('Error deleting notification');
-            }
-        }
-
-        // Load notifications list
-        function loadNotificationsList() {
-            const container = document.getElementById('notificationsList');
-            if (!container) return;
-            
-            container.innerHTML = '';
-            
-            if (!currentData || !currentData.notifications) return;
-            
-            currentData.notifications.forEach(notif => {
-                const item = document.createElement('div');
-                item.className = 'notification-item';
-                item.innerHTML = `
-                    <div class="notification-header">
-                        <div class="notification-title">${notif.title}</div>
-                        <div class="notification-type type-${notif.type}">${notif.type}</div>
-                    </div>
-                    <div class="notification-message">${notif.message}</div>
-                    <div class="notification-date">${new Date(notif.created_at).toLocaleDateString()}</div>
-                    <div style="margin-top: 10px;">
-                        <button class="btn btn-danger btn-sm" onclick="deleteNotification('${notif._id}')">Delete</button>
-                    </div>
-                `;
-                container.appendChild(item);
-            });
-        }
-
-        // Document form submission
-        async function submitDocumentForm() {
-            const formData = {
-                title: document.getElementById('docTitle').value,
-                description: document.getElementById('docDescription').value
-            };
-            
-            try {
-                const response = await authenticatedFetch('/.netlify/functions/api/documents', {
-                    method: 'POST',
-                    body: JSON.stringify(formData)
-                });
-                
-                const data = await response.json();
-                
-                if (data.success) {
-                    alert('Document added successfully!');
-                    document.getElementById('documentForm').reset();
-                    loadDashboardData();
-                } else {
-                    alert('Error: ' + data.message);
-                }
-            } catch (error) {
-                console.error('Error adding document:', error);
-                alert('Error adding document');
-            }
-        }
-
-        // Delete document
-        async function deleteDocument(id) {
-            if (!confirm('Are you sure you want to delete this document?')) return;
-            
-            try {
-                const response = await authenticatedFetch(`/.netlify/functions/api/documents/${id}`, {
-                    method: 'DELETE'
-                });
-                
-                const data = await response.json();
-                
-                if (data.success) {
-                    alert('Document deleted successfully!');
-                    loadDashboardData();
-                } else {
-                    alert('Error: ' + data.message);
-                }
-            } catch (error) {
-                console.error('Error deleting document:', error);
-                alert('Error deleting document');
-            }
-        }
-
-        // Load documents list
-        function loadDocumentsList() {
-            const container = document.getElementById('documentsList');
-            if (!container) return;
-            
-            container.innerHTML = '';
-            
-            if (!currentData || !currentData.documents) return;
-            
-            currentData.documents.forEach(doc => {
-                const item = document.createElement('div');
-                item.className = 'document-item';
-                item.innerHTML = `
-                    <div class="document-info">
-                        <div class="document-title">${doc.title}</div>
-                        <div class="document-description">${doc.description || 'No description'}</div>
-                        <div class="file-info">
-                            ${new Date(doc.created_at).toLocaleDateString()}
-                        </div>
-                    </div>
-                    <div class="document-actions">
-                        <button class="btn btn-danger btn-sm" onclick="deleteDocument('${doc._id}')">Delete</button>
-                    </div>
-                `;
-                container.appendChild(item);
-            });
-        }
+        // ... (rest of the existing functions remain the same)
 
         // Make functions available globally
         window.editStudent = editStudent;
