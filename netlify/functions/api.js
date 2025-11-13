@@ -77,8 +77,8 @@ async function initializeData() {
     }
 }
 
-// Session simulation (using JWT-like approach for serverless)
-const sessions = new Map();
+// Session simulation (using Map for serverless)
+let sessions = new Map();
 
 function createSession(user) {
     const sessionId = Math.random().toString(36).substring(2) + Date.now().toString(36);
@@ -103,6 +103,7 @@ function createSession(user) {
 }
 
 function getSession(sessionId) {
+    if (!sessionId) return null;
     return sessions.get(sessionId);
 }
 
@@ -113,10 +114,12 @@ function destroySession(sessionId) {
 // Auth middleware for serverless
 function requireAuth(request) {
     const sessionId = request.headers['x-session-id'];
-    if (!sessionId || !getSession(sessionId)) {
+    const session = getSession(sessionId);
+    
+    if (!sessionId || !session) {
         throw new Error('Authentication required');
     }
-    return getSession(sessionId);
+    return session;
 }
 
 // Main handler
@@ -141,6 +144,7 @@ exports.handler = async function(event, context) {
     try {
         // Connect to database
         await connectDB();
+        await initializeData();
         
         const path = event.path.replace('/.netlify/functions/api', '');
         const method = event.httpMethod;
@@ -174,11 +178,11 @@ exports.handler = async function(event, context) {
                 headers,
                 body: JSON.stringify({ 
                     bio: bio || {}, 
-                    students, 
-                    publications, 
-                    research, 
-                    notifications, 
-                    documents 
+                    students: students || [], 
+                    publications: publications || [], 
+                    research: research || [], 
+                    notifications: notifications || [], 
+                    documents: documents || [] 
                 })
             };
         }
@@ -208,8 +212,7 @@ exports.handler = async function(event, context) {
             return {
                 statusCode: 200,
                 headers: {
-                    ...headers,
-                    'Set-Cookie': `sessionId=${sessionId}; HttpOnly; Path=/; Max-Age=86400`
+                    ...headers
                 },
                 body: JSON.stringify({ 
                     success: true, 
@@ -232,17 +235,14 @@ exports.handler = async function(event, context) {
             
             return {
                 statusCode: 200,
-                headers: {
-                    ...headers,
-                    'Set-Cookie': 'sessionId=; HttpOnly; Path=/; Max-Age=0'
-                },
+                headers,
                 body: JSON.stringify({ success: true, message: 'Logout successful' })
             };
         }
         
         if (path === '/auth/status' && method === 'GET') {
             const sessionId = event.headers['x-session-id'];
-            const session = sessionId ? getSession(sessionId) : null;
+            const session = getSession(sessionId);
             
             if (session) {
                 return {
@@ -268,281 +268,174 @@ exports.handler = async function(event, context) {
         
         // Protected routes
         if (path === '/data/bio' && method === 'POST') {
-            try {
-                const session = requireAuth(event);
-                const { bio, contact, profile_photo } = JSON.parse(event.body);
-                
-                await Profile.findOneAndUpdate({}, { bio, contact, profile_photo }, { upsert: true });
-                return {
-                    statusCode: 200,
-                    headers,
-                    body: JSON.stringify({ success: true, message: 'Bio updated' })
-                };
-            } catch (authError) {
-                return {
-                    statusCode: 401,
-                    headers,
-                    body: JSON.stringify({ success: false, message: 'Authentication required' })
-                };
-            }
+            const session = requireAuth(event);
+            const { bio, contact } = JSON.parse(event.body);
+            
+            await Profile.findOneAndUpdate({}, { bio, contact }, { upsert: true, new: true });
+            return {
+                statusCode: 200,
+                headers,
+                body: JSON.stringify({ success: true, message: 'Bio updated' })
+            };
         }
         
         if (path === '/data/student' && method === 'POST') {
-            try {
-                const session = requireAuth(event);
-                const { name, degree, type, research_focus, current_work, profile_photo } = JSON.parse(event.body);
-                
-                const student = await Student.create({ name, degree, type, research_focus, current_work, profile_photo });
-                return {
-                    statusCode: 200,
-                    headers,
-                    body: JSON.stringify({ success: true, message: 'Student added', studentId: student._id })
-                };
-            } catch (authError) {
-                return {
-                    statusCode: 401,
-                    headers,
-                    body: JSON.stringify({ success: false, message: 'Authentication required' })
-                };
-            }
+            const session = requireAuth(event);
+            const { name, degree, type, research_focus, current_work } = JSON.parse(event.body);
+            
+            const student = await Student.create({ name, degree, type, research_focus, current_work });
+            return {
+                statusCode: 200,
+                headers,
+                body: JSON.stringify({ success: true, message: 'Student added', studentId: student._id })
+            };
         }
         
         if (path.startsWith('/data/student/') && method === 'PUT') {
-            try {
-                const session = requireAuth(event);
-                const id = path.split('/').pop();
-                const { name, degree, type, research_focus, current_work, profile_photo } = JSON.parse(event.body);
-                
-                await Student.findByIdAndUpdate(id, { name, degree, type, research_focus, current_work, profile_photo });
-                return {
-                    statusCode: 200,
-                    headers,
-                    body: JSON.stringify({ success: true, message: 'Student updated' })
-                };
-            } catch (authError) {
-                return {
-                    statusCode: 401,
-                    headers,
-                    body: JSON.stringify({ success: false, message: 'Authentication required' })
-                };
-            }
+            const session = requireAuth(event);
+            const id = path.split('/').pop();
+            const { name, degree, type, research_focus, current_work } = JSON.parse(event.body);
+            
+            await Student.findByIdAndUpdate(id, { name, degree, type, research_focus, current_work });
+            return {
+                statusCode: 200,
+                headers,
+                body: JSON.stringify({ success: true, message: 'Student updated' })
+            };
         }
         
         if (path.startsWith('/data/student/') && method === 'DELETE') {
-            try {
-                const session = requireAuth(event);
-                const id = path.split('/').pop();
-                
-                await Student.findByIdAndDelete(id);
-                return {
-                    statusCode: 200,
-                    headers,
-                    body: JSON.stringify({ success: true, message: 'Student deleted' })
-                };
-            } catch (authError) {
-                return {
-                    statusCode: 401,
-                    headers,
-                    body: JSON.stringify({ success: false, message: 'Authentication required' })
-                };
-            }
+            const session = requireAuth(event);
+            const id = path.split('/').pop();
+            
+            await Student.findByIdAndDelete(id);
+            return {
+                statusCode: 200,
+                headers,
+                body: JSON.stringify({ success: true, message: 'Student deleted' })
+            };
         }
         
         if (path === '/data/publication' && method === 'POST') {
-            try {
-                const session = requireAuth(event);
-                const { title, details, year, link } = JSON.parse(event.body);
-                
-                await Publication.create({ title, details, year, link });
-                return {
-                    statusCode: 200,
-                    headers,
-                    body: JSON.stringify({ success: true, message: 'Publication added' })
-                };
-            } catch (authError) {
-                return {
-                    statusCode: 401,
-                    headers,
-                    body: JSON.stringify({ success: false, message: 'Authentication required' })
-                };
-            }
+            const session = requireAuth(event);
+            const { title, details, year, link } = JSON.parse(event.body);
+            
+            await Publication.create({ title, details, year, link });
+            return {
+                statusCode: 200,
+                headers,
+                body: JSON.stringify({ success: true, message: 'Publication added' })
+            };
         }
         
         if (path.startsWith('/data/publication/') && method === 'PUT') {
-            try {
-                const session = requireAuth(event);
-                const id = path.split('/').pop();
-                const { title, details, year, link } = JSON.parse(event.body);
-                
-                await Publication.findByIdAndUpdate(id, { title, details, year, link });
-                return {
-                    statusCode: 200,
-                    headers,
-                    body: JSON.stringify({ success: true, message: 'Publication updated' })
-                };
-            } catch (authError) {
-                return {
-                    statusCode: 401,
-                    headers,
-                    body: JSON.stringify({ success: false, message: 'Authentication required' })
-                };
-            }
+            const session = requireAuth(event);
+            const id = path.split('/').pop();
+            const { title, details, year, link } = JSON.parse(event.body);
+            
+            await Publication.findByIdAndUpdate(id, { title, details, year, link });
+            return {
+                statusCode: 200,
+                headers,
+                body: JSON.stringify({ success: true, message: 'Publication updated' })
+            };
         }
         
         if (path.startsWith('/data/publication/') && method === 'DELETE') {
-            try {
-                const session = requireAuth(event);
-                const id = path.split('/').pop();
-                
-                await Publication.findByIdAndDelete(id);
-                return {
-                    statusCode: 200,
-                    headers,
-                    body: JSON.stringify({ success: true, message: 'Publication deleted' })
-                };
-            } catch (authError) {
-                return {
-                    statusCode: 401,
-                    headers,
-                    body: JSON.stringify({ success: false, message: 'Authentication required' })
-                };
-            }
+            const session = requireAuth(event);
+            const id = path.split('/').pop();
+            
+            await Publication.findByIdAndDelete(id);
+            return {
+                statusCode: 200,
+                headers,
+                body: JSON.stringify({ success: true, message: 'Publication deleted' })
+            };
         }
         
         if (path === '/data/research' && method === 'POST') {
-            try {
-                const session = requireAuth(event);
-                const { title, description } = JSON.parse(event.body);
-                
-                await Research.create({ title, description });
-                return {
-                    statusCode: 200,
-                    headers,
-                    body: JSON.stringify({ success: true, message: 'Research added' })
-                };
-            } catch (authError) {
-                return {
-                    statusCode: 401,
-                    headers,
-                    body: JSON.stringify({ success: false, message: 'Authentication required' })
-                };
-            }
+            const session = requireAuth(event);
+            const { title, description } = JSON.parse(event.body);
+            
+            await Research.create({ title, description });
+            return {
+                statusCode: 200,
+                headers,
+                body: JSON.stringify({ success: true, message: 'Research added' })
+            };
         }
         
         if (path.startsWith('/data/research/') && method === 'PUT') {
-            try {
-                const session = requireAuth(event);
-                const id = path.split('/').pop();
-                const { title, description } = JSON.parse(event.body);
-                
-                await Research.findByIdAndUpdate(id, { title, description });
-                return {
-                    statusCode: 200,
-                    headers,
-                    body: JSON.stringify({ success: true, message: 'Research updated' })
-                };
-            } catch (authError) {
-                return {
-                    statusCode: 401,
-                    headers,
-                    body: JSON.stringify({ success: false, message: 'Authentication required' })
-                };
-            }
+            const session = requireAuth(event);
+            const id = path.split('/').pop();
+            const { title, description } = JSON.parse(event.body);
+            
+            await Research.findByIdAndUpdate(id, { title, description });
+            return {
+                statusCode: 200,
+                headers,
+                body: JSON.stringify({ success: true, message: 'Research updated' })
+            };
         }
         
         if (path.startsWith('/data/research/') && method === 'DELETE') {
-            try {
-                const session = requireAuth(event);
-                const id = path.split('/').pop();
-                
-                await Research.findByIdAndDelete(id);
-                return {
-                    statusCode: 200,
-                    headers,
-                    body: JSON.stringify({ success: true, message: 'Research deleted' })
-                };
-            } catch (authError) {
-                return {
-                    statusCode: 401,
-                    headers,
-                    body: JSON.stringify({ success: false, message: 'Authentication required' })
-                };
-            }
+            const session = requireAuth(event);
+            const id = path.split('/').pop();
+            
+            await Research.findByIdAndDelete(id);
+            return {
+                statusCode: 200,
+                headers,
+                body: JSON.stringify({ success: true, message: 'Research deleted' })
+            };
         }
         
         if (path === '/notifications' && method === 'POST') {
-            try {
-                const session = requireAuth(event);
-                const { title, message, type } = JSON.parse(event.body);
-                
-                await Notification.create({ title, message, type: type || 'info', is_active: true });
-                return {
-                    statusCode: 200,
-                    headers,
-                    body: JSON.stringify({ success: true, message: 'Notification added' })
-                };
-            } catch (authError) {
-                return {
-                    statusCode: 401,
-                    headers,
-                    body: JSON.stringify({ success: false, message: 'Authentication required' })
-                };
-            }
+            const session = requireAuth(event);
+            const { title, message, type } = JSON.parse(event.body);
+            
+            await Notification.create({ title, message, type: type || 'info', is_active: true });
+            return {
+                statusCode: 200,
+                headers,
+                body: JSON.stringify({ success: true, message: 'Notification added' })
+            };
         }
         
         if (path.startsWith('/notifications/') && method === 'DELETE') {
-            try {
-                const session = requireAuth(event);
-                const id = path.split('/').pop();
-                
-                await Notification.findByIdAndDelete(id);
-                return {
-                    statusCode: 200,
-                    headers,
-                    body: JSON.stringify({ success: true, message: 'Notification deleted' })
-                };
-            } catch (authError) {
-                return {
-                    statusCode: 401,
-                    headers,
-                    body: JSON.stringify({ success: false, message: 'Authentication required' })
-                };
-            }
+            const session = requireAuth(event);
+            const id = path.split('/').pop();
+            
+            await Notification.findByIdAndDelete(id);
+            return {
+                statusCode: 200,
+                headers,
+                body: JSON.stringify({ success: true, message: 'Notification deleted' })
+            };
         }
         
-        // File upload endpoint - store base64 directly
-        if (path === '/upload' && method === 'POST') {
-            try {
-                const session = requireAuth(event);
-                const { image, filename } = JSON.parse(event.body);
-                
-                if (!image) {
-                    return {
-                        statusCode: 400,
-                        headers,
-                        body: JSON.stringify({ success: false, message: 'No image provided' })
-                    };
-                }
-                
-                // Create data URL from base64
-                const fileUrl = `data:image/jpeg;base64,${image}`;
-                
-                return {
-                    statusCode: 200,
-                    headers,
-                    body: JSON.stringify({ 
-                        success: true, 
-                        message: 'File uploaded successfully',
-                        url: fileUrl
-                    })
-                };
-            } catch (authError) {
-                return {
-                    statusCode: 401,
-                    headers,
-                    body: JSON.stringify({ success: false, message: 'Authentication required' })
-                };
-            }
+        if (path === '/documents' && method === 'POST') {
+            const session = requireAuth(event);
+            const { title, description } = JSON.parse(event.body);
+            
+            await Document.create({ title, description, file_path: '', file_size: 0, file_type: 'pdf' });
+            return {
+                statusCode: 200,
+                headers,
+                body: JSON.stringify({ success: true, message: 'Document added' })
+            };
+        }
+        
+        if (path.startsWith('/documents/') && method === 'DELETE') {
+            const session = requireAuth(event);
+            const id = path.split('/').pop();
+            
+            await Document.findByIdAndDelete(id);
+            return {
+                statusCode: 200,
+                headers,
+                body: JSON.stringify({ success: true, message: 'Document deleted' })
+            };
         }
         
         return {
