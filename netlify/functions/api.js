@@ -1,6 +1,5 @@
 const mongoose = require('mongoose');
 const bcrypt = require('bcryptjs');
-const path = require('path');
 
 // MongoDB connection
 const MONGODB_URL = 'mongodb+srv://henrykiema47:Henry1441@cluster0.a8qyrnm.mongodb.net/prof_mbinda?retryWrites=true&w=majority';
