@@ -174,6 +174,34 @@
             box-shadow: 0 0 0 3px rgba(45, 156, 219, 0.1);
         }
 
+        .file-upload {
+            border: 2px dashed var(--border);
+            padding: 20px;
+            text-align: center;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: border-color 0.2s;
+        }
+
+        .file-upload:hover {
+            border-color: var(--accent);
+        }
+
+        .file-upload input {
+            display: none;
+        }
+
+        .file-upload-label {
+            display: block;
+            cursor: pointer;
+        }
+
+        .file-upload-icon {
+            font-size: 2rem;
+            color: var(--accent);
+            margin-bottom: 10px;
+        }
+
         .btn {
             padding: 12px 24px;
             border: none;
@@ -471,6 +499,13 @@
             color: #718096;
         }
 
+        .preview-image {
+            max-width: 200px;
+            max-height: 200px;
+            margin-top: 10px;
+            border-radius: 4px;
+        }
+
         @media (max-width: 768px) {
             .dashboard-container {
                 flex-direction: column;
@@ -585,6 +620,20 @@
                             <label for="contact">Contact Information</label>
                             <textarea id="contact" name="contact" rows="4" placeholder="Enter contact details..."></textarea>
                         </div>
+                        <div class="form-group">
+                            <label for="profilePhoto">Profile Photo</label>
+                            <div class="file-upload">
+                                <label for="profilePhotoInput" class="file-upload-label">
+                                    <div class="file-upload-icon">
+                                        <i class="fas fa-cloud-upload-alt"></i>
+                                    </div>
+                                    <div>Click to upload profile photo</div>
+                                    <div class="file-info">No file size limits</div>
+                                </label>
+                                <input type="file" id="profilePhotoInput" name="profile_photo" accept="image/*">
+                            </div>
+                            <div id="profilePhotoPreview"></div>
+                        </div>
                         <button type="submit" class="btn btn-primary">Update Bio</button>
                     </form>
                 </div>
@@ -622,6 +671,20 @@
                             <label for="studentWork">Current Work</label>
                             <textarea id="studentWork" name="current_work" rows="3"></textarea>
                         </div>
+                        <div class="form-group">
+                            <label for="studentPhoto">Student Photo</label>
+                            <div class="file-upload">
+                                <label for="studentPhotoInput" class="file-upload-label">
+                                    <div class="file-upload-icon">
+                                        <i class="fas fa-cloud-upload-alt"></i>
+                                    </div>
+                                    <div>Click to upload student photo</div>
+                                    <div class="file-info">No file size limits</div>
+                                </label>
+                                <input type="file" id="studentPhotoInput" name="student_photo" accept="image/*">
+                            </div>
+                            <div id="studentPhotoPreview"></div>
+                        </div>
                         <button type="submit" class="btn btn-primary" id="studentSubmitBtn">Add Student</button>
                         <button type="button" class="btn btn-danger" id="studentCancelBtn" style="display: none;">Cancel</button>
                     </form>
@@ -653,6 +716,19 @@
                             <label for="pubLink">Link (optional)</label>
                             <input type="url" id="pubLink" name="link">
                         </div>
+                        <div class="form-group">
+                            <label for="pubDocument">Publication Document</label>
+                            <div class="file-upload">
+                                <label for="pubDocumentInput" class="file-upload-label">
+                                    <div class="file-upload-icon">
+                                        <i class="fas fa-cloud-upload-alt"></i>
+                                    </div>
+                                    <div>Click to upload publication document</div>
+                                    <div class="file-info">No file size limits</div>
+                                </label>
+                                <input type="file" id="pubDocumentInput" name="pub_document" accept=".pdf,.doc,.docx">
+                            </div>
+                        </div>
                         <button type="submit" class="btn btn-primary" id="publicationSubmitBtn">Add Publication</button>
                         <button type="button" class="btn btn-danger" id="publicationCancelBtn" style="display: none;">Cancel</button>
                     </form>
@@ -675,6 +751,19 @@
                         <div class="form-group">
                             <label for="researchDescription">Description</label>
                             <textarea id="researchDescription" name="description" rows="5" required></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label for="researchDocument">Research Document</label>
+                            <div class="file-upload">
+                                <label for="researchDocumentInput" class="file-upload-label">
+                                    <div class="file-upload-icon">
+                                        <i class="fas fa-cloud-upload-alt"></i>
+                                    </div>
+                                    <div>Click to upload research document</div>
+                                    <div class="file-info">No file size limits</div>
+                                </label>
+                                <input type="file" id="researchDocumentInput" name="research_document" accept=".pdf,.doc,.docx">
+                            </div>
                         </div>
                         <button type="submit" class="btn btn-primary" id="researchSubmitBtn">Add Research Project</button>
                         <button type="button" class="btn btn-danger" id="researchCancelBtn" style="display: none;">Cancel</button>
@@ -727,6 +816,19 @@
                             <label for="docDescription">Description</label>
                             <textarea id="docDescription" name="description" rows="3"></textarea>
                         </div>
+                        <div class="form-group">
+                            <label for="docFile">Document File</label>
+                            <div class="file-upload">
+                                <label for="docFileInput" class="file-upload-label">
+                                    <div class="file-upload-icon">
+                                        <i class="fas fa-cloud-upload-alt"></i>
+                                    </div>
+                                    <div>Click to upload document</div>
+                                    <div class="file-info">No file size limits</div>
+                                </label>
+                                <input type="file" id="docFileInput" name="doc_file" accept=".pdf,.doc,.docx,.jpg,.jpeg,.png">
+                            </div>
+                        </div>
                         <button type="submit" class="btn btn-primary">Add Document</button>
                     </form>
                 </div>
@@ -764,6 +866,9 @@
 
             // Form submissions
             setupFormHandlers();
+            
+            // File upload previews
+            setupFileUploads();
         });
 
         // Check server connection
@@ -920,6 +1025,37 @@
             }, 5000);
         }
 
+        // Setup file upload previews
+        function setupFileUploads() {
+            // Profile photo upload
+            document.getElementById('profilePhotoInput').addEventListener('change', function(e) {
+                const file = e.target.files[0];
+                if (file) {
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        document.getElementById('profilePhotoPreview').innerHTML = `
+                            <img src="${e.target.result}" class="preview-image" alt="Profile preview">
+                        `;
+                    };
+                    reader.readAsDataURL(file);
+                }
+            });
+
+            // Student photo upload
+            document.getElementById('studentPhotoInput').addEventListener('change', function(e) {
+                const file = e.target.files[0];
+                if (file) {
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        document.getElementById('studentPhotoPreview').innerHTML = `
+                            <img src="${e.target.result}" class="preview-image" alt="Student preview">
+                        `;
+                    };
+                    reader.readAsDataURL(file);
+                }
+            });
+        }
+
         // Load dashboard data
         async function loadDashboardData() {
             try {
@@ -943,6 +1079,11 @@
                 if (currentData.bio) {
                     document.getElementById('bio').value = currentData.bio.bio || '';
                     document.getElementById('contact').value = currentData.bio.contact || '';
+                    if (currentData.bio.profile_photo) {
+                        document.getElementById('profilePhotoPreview').innerHTML = `
+                            <img src="${currentData.bio.profile_photo}" class="preview-image" alt="Current profile photo">
+                        `;
+                    }
                 }
                 
                 // Load all lists
@@ -1036,6 +1177,14 @@
                 contact: document.getElementById('contact').value
             };
             
+            // Handle file upload
+            const profilePhotoInput = document.getElementById('profilePhotoInput');
+            if (profilePhotoInput.files[0]) {
+                // For file uploads, you would need to use FormData
+                // This is a simplified version - in production you'd need proper file handling
+                alert('Profile photo upload functionality requires additional server setup for file handling.');
+            }
+            
             try {
                 const response = await authenticatedFetch('/.netlify/functions/api/data/bio', {
                     method: 'POST',
@@ -1065,6 +1214,12 @@
                 research_focus: document.getElementById('studentResearch').value,
                 current_work: document.getElementById('studentWork').value
             };
+            
+            // Handle file upload
+            const studentPhotoInput = document.getElementById('studentPhotoInput');
+            if (studentPhotoInput.files[0]) {
+                alert('Student photo upload functionality requires additional server setup for file handling.');
+            }
             
             const studentId = document.getElementById('studentId').value;
             
@@ -1100,6 +1255,7 @@
             document.getElementById('studentId').value = '';
             document.getElementById('studentSubmitBtn').textContent = 'Add Student';
             document.getElementById('studentCancelBtn').style.display = 'none';
+            document.getElementById('studentPhotoPreview').innerHTML = '';
         }
 
         // Edit student
@@ -1113,6 +1269,13 @@
             
             document.getElementById('studentSubmitBtn').textContent = 'Update Student';
             document.getElementById('studentCancelBtn').style.display = 'inline-block';
+            
+            // Show current photo if exists
+            if (student.profile_photo) {
+                document.getElementById('studentPhotoPreview').innerHTML = `
+                    <img src="${student.profile_photo}" class="preview-image" alt="Current student photo">
+                `;
+            }
             
             switchTab('students');
         }
@@ -1179,6 +1342,12 @@
                 year: parseInt(document.getElementById('pubYear').value),
                 link: document.getElementById('pubLink').value
             };
+            
+            // Handle file upload
+            const pubDocumentInput = document.getElementById('pubDocumentInput');
+            if (pubDocumentInput.files[0]) {
+                alert('Publication document upload functionality requires additional server setup for file handling.');
+            }
             
             const publicationId = document.getElementById('publicationId').value;
             
@@ -1290,6 +1459,12 @@
                 title: document.getElementById('researchTitle').value,
                 description: document.getElementById('researchDescription').value
             };
+            
+            // Handle file upload
+            const researchDocumentInput = document.getElementById('researchDocumentInput');
+            if (researchDocumentInput.files[0]) {
+                alert('Research document upload functionality requires additional server setup for file handling.');
+            }
             
             const researchId = document.getElementById('researchId').value;
             
@@ -1477,6 +1652,12 @@
                 title: document.getElementById('docTitle').value,
                 description: document.getElementById('docDescription').value
             };
+            
+            // Handle file upload
+            const docFileInput = document.getElementById('docFileInput');
+            if (docFileInput.files[0]) {
+                alert('Document file upload functionality requires additional server setup for file handling.');
+            }
             
             try {
                 const response = await authenticatedFetch('/.netlify/functions/api/documents', {
