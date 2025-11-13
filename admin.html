@@ -457,86 +457,6 @@
             color: #718096;
         }
 
-        /* Image Upload Styles */
-        .image-upload-container {
-            border: 2px dashed var(--border);
-            border-radius: 8px;
-            padding: 20px;
-            text-align: center;
-            margin-bottom: 20px;
-            background-color: var(--light);
-            transition: border-color 0.3s;
-        }
-
-        .image-upload-container.dragover {
-            border-color: var(--accent);
-            background-color: #ebf8ff;
-        }
-
-        .image-upload-label {
-            cursor: pointer;
-            display: block;
-        }
-
-        .image-upload-text {
-            margin-bottom: 10px;
-            color: var(--text);
-        }
-
-        .image-upload-btn {
-            background-color: var(--primary);
-            color: white;
-            padding: 10px 20px;
-            border-radius: 6px;
-            cursor: pointer;
-            display: inline-block;
-            transition: background-color 0.2s;
-        }
-
-        .image-upload-btn:hover {
-            background-color: var(--secondary);
-        }
-
-        .image-preview {
-            max-width: 300px;
-            max-height: 300px;
-            margin: 15px auto;
-            border-radius: 8px;
-            overflow: hidden;
-            box-shadow: var(--shadow);
-            display: none;
-        }
-
-        .image-preview img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
-
-        .current-image {
-            max-width: 200px;
-            max-height: 200px;
-            border-radius: 8px;
-            margin: 10px 0;
-            box-shadow: var(--shadow);
-        }
-
-        .image-actions {
-            display: flex;
-            gap: 10px;
-            justify-content: center;
-            margin-top: 10px;
-        }
-
-        .student-photo-preview {
-            width: 100px;
-            height: 100px;
-            border-radius: 50%;
-            object-fit: cover;
-            margin: 10px 0;
-            border: 3px solid var(--border);
-        }
-
         @media (max-width: 768px) {
             .dashboard-container {
                 flex-direction: column;
@@ -636,26 +556,6 @@
                             <label for="contact">Contact Information</label>
                             <textarea id="contact" name="contact" rows="4" placeholder="Enter contact details..."></textarea>
                         </div>
-                        
-                        <!-- Professor Photo Upload -->
-                        <div class="form-group">
-                            <label>Professor Photo</label>
-                            <div id="currentProfessorPhoto">
-                                <!-- Current photo will be loaded here -->
-                            </div>
-                            <div class="image-upload-container" id="professorPhotoUpload">
-                                <label class="image-upload-label">
-                                    <div class="image-upload-text">Click to upload professor photo or drag and drop</div>
-                                    <div class="image-upload-btn">Choose File</div>
-                                    <input type="file" id="professorPhotoInput" accept="image/*" style="display: none;">
-                                </label>
-                            </div>
-                            <div class="image-preview" id="professorPhotoPreview">
-                                <img src="" alt="Preview">
-                            </div>
-                            <input type="hidden" id="professorPhotoData" name="profile_photo">
-                        </div>
-                        
                         <button type="submit" class="btn btn-primary">Update Bio</button>
                     </form>
                 </div>
@@ -693,26 +593,6 @@
                             <label for="studentWork">Current Work</label>
                             <textarea id="studentWork" name="current_work" rows="3"></textarea>
                         </div>
-                        
-                        <!-- Student Photo Upload -->
-                        <div class="form-group">
-                            <label>Student Photo</label>
-                            <div id="currentStudentPhoto">
-                                <!-- Current photo will be loaded here -->
-                            </div>
-                            <div class="image-upload-container" id="studentPhotoUpload">
-                                <label class="image-upload-label">
-                                    <div class="image-upload-text">Click to upload student photo or drag and drop</div>
-                                    <div class="image-upload-btn">Choose File</div>
-                                    <input type="file" id="studentPhotoInput" accept="image/*" style="display: none;">
-                                </label>
-                            </div>
-                            <div class="image-preview" id="studentPhotoPreview">
-                                <img src="" alt="Preview">
-                            </div>
-                            <input type="hidden" id="studentPhotoData" name="profile_photo">
-                        </div>
-                        
                         <button type="submit" class="btn btn-primary" id="studentSubmitBtn">Add Student</button>
                         <button type="button" class="btn btn-danger" id="studentCancelBtn" style="display: none;">Cancel</button>
                     </form>
@@ -835,6 +715,7 @@
         let currentUser = null;
         let currentData = null;
         let sessionId = null;
+        let authCheckInterval = null;
 
         // Check authentication status on page load
         document.addEventListener('DOMContentLoaded', function() {
@@ -855,101 +736,7 @@
 
             // Form submissions
             setupFormHandlers();
-            
-            // Image upload handlers
-            setupImageUploads();
         });
-
-        // Setup image upload functionality
-        function setupImageUploads() {
-            // Professor photo upload
-            const professorInput = document.getElementById('professorPhotoInput');
-            const professorPreview = document.getElementById('professorPhotoPreview');
-            const professorUpload = document.getElementById('professorPhotoUpload');
-            
-            professorInput.addEventListener('change', function(e) {
-                handleImageUpload(e, professorPreview, 'professorPhotoData');
-            });
-            
-            setupDragAndDrop(professorUpload, professorInput, professorPreview, 'professorPhotoData');
-            
-            // Student photo upload
-            const studentInput = document.getElementById('studentPhotoInput');
-            const studentPreview = document.getElementById('studentPhotoPreview');
-            const studentUpload = document.getElementById('studentPhotoUpload');
-            
-            studentInput.addEventListener('change', function(e) {
-                handleImageUpload(e, studentPreview, 'studentPhotoData');
-            });
-            
-            setupDragAndDrop(studentUpload, studentInput, studentPreview, 'studentPhotoData');
-        }
-
-        // Handle image upload and preview - NO SIZE LIMITS
-        function handleImageUpload(event, previewElement, dataFieldId) {
-            const file = event.target.files[0];
-            if (file) {
-                // No file size checking - accept any size
-                const reader = new FileReader();
-                reader.onload = function(e) {
-                    previewElement.querySelector('img').src = e.target.result;
-                    previewElement.style.display = 'block';
-                    document.getElementById(dataFieldId).value = e.target.result.split(',')[1]; // Store base64 data
-                };
-                reader.readAsDataURL(file);
-            }
-        }
-
-        // Setup drag and drop
-        function setupDragAndDrop(dropZone, fileInput, previewElement, dataFieldId) {
-            dropZone.addEventListener('dragover', function(e) {
-                e.preventDefault();
-                dropZone.classList.add('dragover');
-            });
-            
-            dropZone.addEventListener('dragleave', function(e) {
-                e.preventDefault();
-                dropZone.classList.remove('dragover');
-            });
-            
-            dropZone.addEventListener('drop', function(e) {
-                e.preventDefault();
-                dropZone.classList.remove('dragover');
-                
-                const files = e.dataTransfer.files;
-                if (files.length > 0) {
-                    fileInput.files = files;
-                    handleImageUpload({ target: fileInput }, previewElement, dataFieldId);
-                }
-            });
-            
-            dropZone.addEventListener('click', function() {
-                fileInput.click();
-            });
-        }
-
-        // Upload image to server
-        async function uploadImage(base64Data, filename) {
-            try {
-                const response = await authenticatedFetch('/.netlify/functions/api/upload', {
-                    method: 'POST',
-                    body: JSON.stringify({
-                        image: base64Data,
-                        filename: filename
-                    })
-                });
-                
-                if (!response.ok) {
-                    throw new Error(`Upload failed: ${response.status}`);
-                }
-                
-                const data = await response.json();
-                return data;
-            } catch (error) {
-                console.error('Error uploading image:', error);
-                return null;
-            }
-        }
 
         // Check server connection
         async function checkServerConnection() {
@@ -989,6 +776,10 @@
                     currentUser = data.user;
                     sessionId = storedSessionId;
                     showDashboard();
+                    
+                    // Start periodic auth check
+                    if (authCheckInterval) clearInterval(authCheckInterval);
+                    authCheckInterval = setInterval(checkAuthStatus, 60000); // Check every minute
                 } else {
                     localStorage.removeItem('sessionId');
                     showLogin();
@@ -1024,6 +815,10 @@
                     sessionId = data.sessionId;
                     localStorage.setItem('sessionId', data.sessionId);
                     showDashboard();
+                    
+                    // Start periodic auth check
+                    if (authCheckInterval) clearInterval(authCheckInterval);
+                    authCheckInterval = setInterval(checkAuthStatus, 60000); // Check every minute
                 } else {
                     showAlert(alert, data.message, 'error');
                 }
@@ -1036,29 +831,25 @@
         // Handle logout
         async function handleLogout() {
             try {
-                const response = await fetch('/.netlify/functions/api/logout', {
-                    method: 'POST',
-                    headers: {
-                        'x-session-id': sessionId
-                    }
-                });
-                
-                const data = await response.json();
-                
-                if (data.success) {
-                    isAuthenticated = false;
-                    currentUser = null;
-                    sessionId = null;
-                    localStorage.removeItem('sessionId');
-                    showLogin();
+                if (sessionId) {
+                    const response = await fetch('/.netlify/functions/api/logout', {
+                        method: 'POST',
+                        headers: {
+                            'x-session-id': sessionId
+                        }
+                    });
+                    
+                    const data = await response.json();
                 }
             } catch (error) {
                 console.error('Logout error:', error);
-                // Force logout on client side even if server fails
+            } finally {
+                // Always clear client-side state
                 isAuthenticated = false;
                 currentUser = null;
                 sessionId = null;
                 localStorage.removeItem('sessionId');
+                if (authCheckInterval) clearInterval(authCheckInterval);
                 showLogin();
             }
         }
@@ -1121,17 +912,6 @@
                 if (currentData.bio) {
                     document.getElementById('bio').value = currentData.bio.bio || '';
                     document.getElementById('contact').value = currentData.bio.contact || '';
-                    
-                    // Load professor photo
-                    const professorPhotoContainer = document.getElementById('currentProfessorPhoto');
-                    if (currentData.bio.profile_photo) {
-                        professorPhotoContainer.innerHTML = `
-                            <div><strong>Current Photo:</strong></div>
-                            <img src="${currentData.bio.profile_photo}" alt="Professor Photo" class="current-image">
-                        `;
-                    } else {
-                        professorPhotoContainer.innerHTML = '<div>No photo uploaded yet</div>';
-                    }
                 }
                 
                 // Load all lists
@@ -1197,8 +977,28 @@
             });
         }
 
-        // Helper function for authenticated requests
+        // Helper function for authenticated requests with session validation
         async function authenticatedFetch(url, options = {}) {
+            // First check if we're still authenticated
+            try {
+                const authResponse = await fetch('/.netlify/functions/api/auth/status', {
+                    headers: {
+                        'x-session-id': sessionId
+                    }
+                });
+                
+                const authData = await authResponse.json();
+                
+                if (!authData.authenticated) {
+                    // Session expired, force logout
+                    await handleLogout();
+                    throw new Error('Session expired. Please log in again.');
+                }
+            } catch (error) {
+                await handleLogout();
+                throw error;
+            }
+
             const defaultOptions = {
                 headers: {
                     'Content-Type': 'application/json',
@@ -1215,31 +1015,22 @@
                 }
             };
             
-            return fetch(url, mergedOptions);
+            const response = await fetch(url, mergedOptions);
+            
+            // If we get a 401, session is invalid
+            if (response.status === 401) {
+                await handleLogout();
+                throw new Error('Session expired. Please log in again.');
+            }
+            
+            return response;
         }
 
         // Bio form submission
         async function submitBioForm() {
-            let profile_photo = document.getElementById('professorPhotoData').value;
-            
-            // If new photo was uploaded, process it
-            if (profile_photo) {
-                const uploadResult = await uploadImage(profile_photo, 'professor-photo.jpg');
-                if (uploadResult && uploadResult.success) {
-                    profile_photo = uploadResult.url;
-                } else {
-                    alert('Error uploading photo. Please try again.');
-                    return;
-                }
-            } else if (currentData.bio && currentData.bio.profile_photo) {
-                // Keep existing photo if no new one uploaded
-                profile_photo = currentData.bio.profile_photo;
-            }
-            
             const formData = {
                 bio: document.getElementById('bio').value,
-                contact: document.getElementById('contact').value,
-                profile_photo: profile_photo
+                contact: document.getElementById('contact').value
             };
             
             try {
@@ -1253,10 +1044,6 @@
                 if (data.success) {
                     alert('Bio updated successfully!');
                     loadDashboardData();
-                    // Reset photo upload
-                    document.getElementById('professorPhotoData').value = '';
-                    document.getElementById('professorPhotoPreview').style.display = 'none';
-                    document.getElementById('professorPhotoInput').value = '';
                 } else {
                     alert('Error: ' + data.message);
                 }
@@ -1266,48 +1053,22 @@
             }
         }
 
-        // Student form submission - FIXED VERSION
+        // Student form submission
         async function submitStudentForm() {
-            const studentId = document.getElementById('studentId').value;
-            let profile_photo = document.getElementById('studentPhotoData').value;
-            
-            console.log('Submitting student form...');
-            console.log('Student ID:', studentId);
-            console.log('Has photo data:', !!profile_photo);
-            
-            // If we have a new photo, use it directly as base64 data URL
-            if (profile_photo) {
-                profile_photo = `data:image/jpeg;base64,${profile_photo}`;
-                console.log('Using new photo');
-            } else if (studentId) {
-                // Keep existing photo if editing and no new photo uploaded
-                const existingStudent = currentData.students.find(s => s._id === studentId);
-                if (existingStudent && existingStudent.profile_photo) {
-                    profile_photo = existingStudent.profile_photo;
-                    console.log('Keeping existing photo');
-                }
-            } else {
-                console.log('No photo provided');
-            }
-            
             const formData = {
                 name: document.getElementById('studentName').value,
                 degree: document.getElementById('studentDegree').value,
                 type: document.getElementById('studentType').value,
                 research_focus: document.getElementById('studentResearch').value,
-                current_work: document.getElementById('studentWork').value,
-                profile_photo: profile_photo
+                current_work: document.getElementById('studentWork').value
             };
             
-            console.log('Form data:', formData);
+            const studentId = document.getElementById('studentId').value;
             
             const url = studentId 
                 ? `/.netlify/functions/api/data/student/${studentId}`
                 : '/.netlify/functions/api/data/student';
             const method = studentId ? 'PUT' : 'POST';
-            
-            console.log('API URL:', url);
-            console.log('Method:', method);
             
             try {
                 const response = await authenticatedFetch(url, {
@@ -1315,14 +1076,7 @@
                     body: JSON.stringify(formData)
                 });
                 
-                console.log('Response status:', response.status);
-                
-                if (!response.ok) {
-                    throw new Error(`HTTP error! status: ${response.status}`);
-                }
-                
                 const data = await response.json();
-                console.log('Response data:', data);
                 
                 if (data.success) {
                     alert(studentId ? 'Student updated successfully!' : 'Student added successfully!');
@@ -1343,10 +1097,6 @@
             document.getElementById('studentId').value = '';
             document.getElementById('studentSubmitBtn').textContent = 'Add Student';
             document.getElementById('studentCancelBtn').style.display = 'none';
-            document.getElementById('studentPhotoData').value = '';
-            document.getElementById('studentPhotoPreview').style.display = 'none';
-            document.getElementById('studentPhotoInput').value = '';
-            document.getElementById('currentStudentPhoto').innerHTML = '';
         }
 
         // Edit student
@@ -1357,17 +1107,6 @@
             document.getElementById('studentType').value = student.type;
             document.getElementById('studentResearch').value = student.research_focus || '';
             document.getElementById('studentWork').value = student.current_work || '';
-            
-            // Show current student photo
-            const currentPhotoContainer = document.getElementById('currentStudentPhoto');
-            if (student.profile_photo) {
-                currentPhotoContainer.innerHTML = `
-                    <div><strong>Current Photo:</strong></div>
-                    <img src="${student.profile_photo}" alt="Student Photo" class="student-photo-preview">
-                `;
-            } else {
-                currentPhotoContainer.innerHTML = '<div>No photo uploaded yet</div>';
-            }
             
             document.getElementById('studentSubmitBtn').textContent = 'Update Student';
             document.getElementById('studentCancelBtn').style.display = 'inline-block';
@@ -1410,19 +1149,11 @@
             currentData.students.forEach(student => {
                 const item = document.createElement('div');
                 item.className = 'data-item';
-                
-                const studentPhoto = student.profile_photo || 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80';
-                
                 item.innerHTML = `
                     <div class="data-item-content">
-                        <div style="display: flex; align-items: center; gap: 15px;">
-                            <img src="${studentPhoto}" alt="${student.name}" style="width: 50px; height: 50px; border-radius: 50%; object-fit: cover;">
-                            <div>
-                                <strong>${student.name}</strong> - ${student.degree} (${student.type})
-                                ${student.research_focus ? `<br><small>Research: ${student.research_focus}</small>` : ''}
-                                ${student.current_work ? `<br><small>Current Work: ${student.current_work}</small>` : ''}
-                            </div>
-                        </div>
+                        <strong>${student.name}</strong> - ${student.degree} (${student.type})
+                        ${student.research_focus ? `<br><small>Research: ${student.research_focus}</small>` : ''}
+                        ${student.current_work ? `<br><small>Current Work: ${student.current_work}</small>` : ''}
                     </div>
                     <div class="data-item-actions">
                         <button class="edit-btn" onclick="editStudent(${JSON.stringify(student).replace(/"/g, '&quot;')})">
