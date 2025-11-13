@@ -65,10 +65,24 @@
             border-radius: 5px;
             margin-bottom: 10px;
             transition: background-color 0.2s, color 0.2s;
+            position: relative;
         }
 
         .sidebar nav a:hover, .sidebar nav a.active {
             background-color: var(--secondary);
+        }
+
+        .nav-badge {
+            position: absolute;
+            right: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            background-color: var(--accent);
+            color: white;
+            border-radius: 10px;
+            padding: 2px 8px;
+            font-size: 0.8rem;
+            font-weight: 600;
         }
 
         .main-content {
@@ -503,11 +517,26 @@
             <nav>
                 <a href="#" class="nav-link active" data-tab="dashboard">Dashboard</a>
                 <a href="#" class="nav-link" data-tab="bio">Bio & Contact</a>
-                <a href="#" class="nav-link" data-tab="students">Students</a>
-                <a href="#" class="nav-link" data-tab="publications">Publications</a>
-                <a href="#" class="nav-link" data-tab="research">Research</a>
-                <a href="#" class="nav-link" data-tab="notifications">Notifications</a>
-                <a href="#" class="nav-link" data-tab="documents">Documents</a>
+                <a href="#" class="nav-link" data-tab="students">
+                    Students
+                    <span class="nav-badge" id="studentsBadge">0</span>
+                </a>
+                <a href="#" class="nav-link" data-tab="publications">
+                    Publications
+                    <span class="nav-badge" id="publicationsBadge">0</span>
+                </a>
+                <a href="#" class="nav-link" data-tab="research">
+                    Research
+                    <span class="nav-badge" id="researchBadge">0</span>
+                </a>
+                <a href="#" class="nav-link" data-tab="notifications">
+                    Notifications
+                    <span class="nav-badge" id="notificationsBadge">0</span>
+                </a>
+                <a href="#" class="nav-link" data-tab="documents">
+                    Documents
+                    <span class="nav-badge" id="documentsBadge">0</span>
+                </a>
             </nav>
             <div style="margin-top: auto;">
                 <button id="logoutBtn" class="logout-btn">Logout</button>
@@ -715,7 +744,6 @@
         let currentUser = null;
         let currentData = null;
         let sessionId = null;
-        let authCheckInterval = null;
 
         // Check authentication status on page load
         document.addEventListener('DOMContentLoaded', function() {
@@ -776,10 +804,6 @@
                     currentUser = data.user;
                     sessionId = storedSessionId;
                     showDashboard();
-                    
-                    // Start periodic auth check
-                    if (authCheckInterval) clearInterval(authCheckInterval);
-                    authCheckInterval = setInterval(checkAuthStatus, 60000); // Check every minute
                 } else {
                     localStorage.removeItem('sessionId');
                     showLogin();
@@ -815,10 +839,6 @@
                     sessionId = data.sessionId;
                     localStorage.setItem('sessionId', data.sessionId);
                     showDashboard();
-                    
-                    // Start periodic auth check
-                    if (authCheckInterval) clearInterval(authCheckInterval);
-                    authCheckInterval = setInterval(checkAuthStatus, 60000); // Check every minute
                 } else {
                     showAlert(alert, data.message, 'error');
                 }
@@ -831,25 +851,29 @@
         // Handle logout
         async function handleLogout() {
             try {
-                if (sessionId) {
-                    const response = await fetch('/.netlify/functions/api/logout', {
-                        method: 'POST',
-                        headers: {
-                            'x-session-id': sessionId
-                        }
-                    });
-                    
-                    const data = await response.json();
+                const response = await fetch('/.netlify/functions/api/logout', {
+                    method: 'POST',
+                    headers: {
+                        'x-session-id': sessionId
+                    }
+                });
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    isAuthenticated = false;
+                    currentUser = null;
+                    sessionId = null;
+                    localStorage.removeItem('sessionId');
+                    showLogin();
                 }
             } catch (error) {
                 console.error('Logout error:', error);
-            } finally {
-                // Always clear client-side state
+                // Force logout on client side even if server fails
                 isAuthenticated = false;
                 currentUser = null;
                 sessionId = null;
                 localStorage.removeItem('sessionId');
-                if (authCheckInterval) clearInterval(authCheckInterval);
                 showLogin();
             }
         }
@@ -907,6 +931,13 @@
                 document.getElementById('publicationsCount').textContent = currentData.publications.length;
                 document.getElementById('researchCount').textContent = currentData.research.length;
                 document.getElementById('notificationsCount').textContent = currentData.notifications.length;
+                
+                // Update nav badges
+                document.getElementById('studentsBadge').textContent = currentData.students.length;
+                document.getElementById('publicationsBadge').textContent = currentData.publications.length;
+                document.getElementById('researchBadge').textContent = currentData.research.length;
+                document.getElementById('notificationsBadge').textContent = currentData.notifications.length;
+                document.getElementById('documentsBadge').textContent = currentData.documents.length;
                 
                 // Load bio data
                 if (currentData.bio) {
@@ -977,28 +1008,8 @@
             });
         }
 
-        // Helper function for authenticated requests with session validation
+        // Helper function for authenticated requests
         async function authenticatedFetch(url, options = {}) {
-            // First check if we're still authenticated
-            try {
-                const authResponse = await fetch('/.netlify/functions/api/auth/status', {
-                    headers: {
-                        'x-session-id': sessionId
-                    }
-                });
-                
-                const authData = await authResponse.json();
-                
-                if (!authData.authenticated) {
-                    // Session expired, force logout
-                    await handleLogout();
-                    throw new Error('Session expired. Please log in again.');
-                }
-            } catch (error) {
-                await handleLogout();
-                throw error;
-            }
-
             const defaultOptions = {
                 headers: {
                     'Content-Type': 'application/json',
@@ -1015,15 +1026,7 @@
                 }
             };
             
-            const response = await fetch(url, mergedOptions);
-            
-            // If we get a 401, session is invalid
-            if (response.status === 401) {
-                await handleLogout();
-                throw new Error('Session expired. Please log in again.');
-            }
-            
-            return response;
+            return fetch(url, mergedOptions);
         }
 
         // Bio form submission
@@ -1049,7 +1052,7 @@
                 }
             } catch (error) {
                 console.error('Error updating bio:', error);
-                alert('Error updating bio: ' + error.message);
+                alert('Error updating bio');
             }
         }
 
@@ -1087,7 +1090,7 @@
                 }
             } catch (error) {
                 console.error('Error saving student:', error);
-                alert('Error saving student: ' + error.message);
+                alert('Error saving student');
             }
         }
 
@@ -1133,7 +1136,7 @@
                 }
             } catch (error) {
                 console.error('Error deleting student:', error);
-                alert('Error deleting student: ' + error.message);
+                alert('Error deleting student');
             }
         }
 
@@ -1201,7 +1204,7 @@
                 }
             } catch (error) {
                 console.error('Error saving publication:', error);
-                alert('Error saving publication: ' + error.message);
+                alert('Error saving publication');
             }
         }
 
@@ -1246,7 +1249,7 @@
                 }
             } catch (error) {
                 console.error('Error deleting publication:', error);
-                alert('Error deleting publication: ' + error.message);
+                alert('Error deleting publication');
             }
         }
 
@@ -1312,7 +1315,7 @@
                 }
             } catch (error) {
                 console.error('Error saving research:', error);
-                alert('Error saving research: ' + error.message);
+                alert('Error saving research');
             }
         }
 
@@ -1355,7 +1358,7 @@
                 }
             } catch (error) {
                 console.error('Error deleting research:', error);
-                alert('Error deleting research: ' + error.message);
+                alert('Error deleting research');
             }
         }
 
@@ -1414,7 +1417,7 @@
                 }
             } catch (error) {
                 console.error('Error adding notification:', error);
-                alert('Error adding notification: ' + error.message);
+                alert('Error adding notification');
             }
         }
 
@@ -1437,7 +1440,7 @@
                 }
             } catch (error) {
                 console.error('Error deleting notification:', error);
-                alert('Error deleting notification: ' + error.message);
+                alert('Error deleting notification');
             }
         }
 
@@ -1492,7 +1495,7 @@
                 }
             } catch (error) {
                 console.error('Error adding document:', error);
-                alert('Error adding document: ' + error.message);
+                alert('Error adding document');
             }
         }
 
@@ -1515,7 +1518,7 @@
                 }
             } catch (error) {
                 console.error('Error deleting document:', error);
-                alert('Error deleting document: ' + error.message);
+                alert('Error deleting document');
             }
         }
 
